@@ -25,12 +25,22 @@
               <v-list-item-title>Esnaf adı</v-list-item-title>
               <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
             </v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon>
+                <v-icon color="error">mdi-delete-outline</v-icon>
+              </v-btn>
+            </v-list-item-action>
           </v-list-item>
           <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-title>Esnaf adı</v-list-item-title>
               <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
             </v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon>
+                <v-icon color="error">mdi-delete-outline</v-icon>
+              </v-btn>
+            </v-list-item-action>
           </v-list-item>
         </v-card>
       </div>
@@ -39,7 +49,7 @@
           <v-subheader>İHVANLAR</v-subheader>
           <v-list-item two-line>
             <v-list-item-content>
-              <v-list-item-title>Esnaf adı</v-list-item-title>
+              <v-list-item-title>İhvan adı</v-list-item-title>
               <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
@@ -51,7 +61,15 @@
         </v-card>
       </div>
     </div>
-    <AddToVisits :addToVisits="isSheetOpen" @closeSheet="closeSheet" />
+    <AddToVisits
+      :addToVisits="isSheetOpen"
+      @closeSheet="closeSheet"
+      :user="{
+        name: 'Başlık',
+        description:
+          'çok çokçok çokçok çokçok çokçok çokçok çokçok çokçok çok uzun açıklama',
+      }"
+    />
   </div>
 </template>
 

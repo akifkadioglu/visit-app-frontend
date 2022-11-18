@@ -19,16 +19,10 @@
         <div class="add-visit-form">
           <v-card width="500px" elevation="0">
             <v-card-title class="title-overflow" primary-title>
-              Esnaf adı
+              {{ user.name }}
             </v-card-title>
             <v-card-subtitle class="title-overflow" primary-title>
-              Hakkında açıklama Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Neque quaerat delectus, ipsa reprehenderit,
-              quidem impedit libero sed veniam quam quae sunt illum corrupti
-              error pariatur ea molestias qui aut ratione nisi asperiores
-              incidunt vero ipsum provident minima? Mollitia cumque numquam
-              illum repudiandae fugiat consequatur atque dolorum fuga
-              perspiciatis. Sapiente, illum.
+              {{ user.description }}
             </v-card-subtitle>
             <v-card-text>
               <v-form ref="form">
@@ -40,14 +34,7 @@
                   placeholder="Kimlerle beraberdin"
                   multiple
                 >
-                  <template v-slot:selection="{ item, index }">
-                    <v-chip v-if="index < 3">
-                      <span>{{ item }}</span>
-                    </v-chip>
-                    <span v-if="index === 3" class="grey--text text-caption">
-                      (+{{ value.length - 3 }} kişi daha)
-                    </span>
-                  </template>
+                  
                 </v-select>
                 <v-textarea
                   v-model="form.description"
@@ -60,6 +47,11 @@
                   v-model="form.date"
                   class="form-control mt-3"
                   type="date"
+                />
+                <input
+                  v-model="form.time"
+                  class="form-control mt-3"
+                  type="time"
                 />
                 <div class="mt-3" style="text-align: end">
                   <v-btn color="primary" elevation="0">Gönder</v-btn>
@@ -80,6 +72,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    user: {
+      type: Object,
+      default() {
+        return {
+          name: "title",
+          description: "description",
+        };
+      },
+    },
   },
   data() {
     return {
@@ -88,6 +89,7 @@ export default {
         with: [],
         description: "",
         date: "",
+        time: "",
       },
     };
   },

@@ -4,8 +4,9 @@ import Home from '../views/Home.vue'
 import Maps from '../views/Maps.vue'
 import Calendar from '../views/Calendar.vue'
 import Visits from '../views/Visits.vue'
-import AddSomeone from '../views/AddSomeone.vue'
-import Personels from '../views/Personels.vue'
+import People from '../views/People.vue'
+import Personnels from '../views/Personnels.vue'
+import Account from '../views/Account.vue'
 
 Vue.use(VueRouter)
 
@@ -31,17 +32,22 @@ const routes = [
     component: Visits
   },
   {
-    path: '/kisi-ekle',
-    name: 'AddSomeone',
-    component: AddSomeone
+    path: '/kisiler',
+    name: 'People',
+    component: People
   },
   {
     path: '/personeller',
-    name: 'Personels',
-    component: Personels
+    name: 'Personnels',
+    component: Personnels
+  },
+  {
+    path: '/hesabim',
+    name: 'Account',
+    component: Account
   }
 
-  
+
 ]
 
 const router = new VueRouter({

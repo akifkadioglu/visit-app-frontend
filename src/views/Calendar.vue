@@ -20,7 +20,6 @@
           :now="today.slice(0, 10)"
           :value="today.slice(0, 10)"
           :events="events"
-          color="primary"
           type="month"
         ></v-calendar>
         
