@@ -54,4 +54,8 @@ body {
 .scroll {
   overflow-y: scroll;
 }
+.center {
+  display: grid;
+  place-items: center;
+}
 </style>

@@ -16,7 +16,7 @@
           <div></div>
         </div>
 
-        <div class="add-visit-form">
+        <div class="center">
           <v-card width="500px" elevation="0">
             <v-card-title class="title-overflow" primary-title>
               {{ user.name }}
@@ -97,10 +97,7 @@ export default {
 </script>
 
 <style scoped>
-.add-visit-form {
-  display: grid;
-  place-items: center;
-}
+
 .title-overflow {
   text-overflow: ellipsis;
   overflow: hidden;

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div style="display: grid; place-items: center">
+    <div class="center">
       <div class="navbar mt-5" style="width: 500px">
         <input class="" type="date" />
         <span>-</span>
