@@ -7,15 +7,22 @@ import Visits from '../views/Visits.vue'
 import People from '../views/People.vue'
 import Personnels from '../views/Personnels.vue'
 import Account from '../views/Account.vue'
+import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/giris-yap',
+    name: 'Login',
+    component: Login
+  },
+  {
     path: '/',
     name: 'Home',
     component: Home
   },
+
   {
     path: '/haritalar',
     name: 'Maps',
@@ -46,8 +53,6 @@ const routes = [
     name: 'Account',
     component: Account
   }
-
-
 ]
 
 const router = new VueRouter({

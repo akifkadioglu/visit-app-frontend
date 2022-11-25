@@ -1,6 +1,6 @@
 # frontend
 
-## Project setup
+## Project visit_app
 ```
 npm install
 ```

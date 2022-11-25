@@ -10,7 +10,14 @@ import VueApexCharts from 'vue-apexcharts'
 require('dotenv').config()
 const moment = require('moment')
 require('moment/locale/tr')
+import VueCryptojs from 'vue-cryptojs'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+require('./http-common');
 
+Vue.use(VueAxios, axios)
+
+Vue.use(VueCryptojs)
 Vue.use(require('vue-moment'), {
   moment
 })
@@ -24,7 +31,6 @@ Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
 Vue.use(Vuetify)
 Vue.config.productionTip = false
-
 new Vue({
   router,
   store,
