@@ -3,7 +3,7 @@
     <div>
       <transition name="fade" mode="out-in">
         <LoginComponent v-if="isLoginning" />
-        <RegisterComponent v-else />
+        <RegisterComponent v-else @registered="isLoginning = true" />
       </transition>
       <v-divider />
       <div class="text-center">

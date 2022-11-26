@@ -7,14 +7,17 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import VueApexCharts from 'vue-apexcharts'
+import VueJwtDecode from 'vue-jwt-decode'
+
 require('dotenv').config()
 const moment = require('moment')
 require('moment/locale/tr')
 import VueCryptojs from 'vue-cryptojs'
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 require('./http-common');
-
+Vue.use(VueJwtDecode)
 Vue.use(VueAxios, axios)
 
 Vue.use(VueCryptojs)
@@ -31,6 +34,8 @@ Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
 Vue.use(Vuetify)
 Vue.config.productionTip = false
+
+
 new Vue({
   router,
   store,

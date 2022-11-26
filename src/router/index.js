@@ -8,6 +8,7 @@ import People from '../views/People.vue'
 import Personnels from '../views/Personnels.vue'
 import Account from '../views/Account.vue'
 import Login from '../views/Login.vue'
+import Sectors from '../views/Sectors.vue'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,11 @@ const routes = [
     path: '/kisiler',
     name: 'People',
     component: People
+  },
+  {
+    path: '/sektorler',
+    name: 'Sectors',
+    component: Sectors
   },
   {
     path: '/personeller',

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import VueJwtDecode from "vue-jwt-decode";
+const base64url = require("base64url");
 
 export default {
   data() {
@@ -52,6 +52,13 @@ export default {
     };
   },
   methods: {
+    parseJwt(token) {
+      try {
+        return JSON.parse(base64url.decode(token.split(".")[1]));
+      } catch (e) {
+        return null;
+      }
+    },
     async login() {
       this.isLoading = true;
       await this.axios
@@ -59,16 +66,22 @@ export default {
         .then((result) => {
           this.axios.defaults.headers.common["Authorization"] =
             `Bearer ` + result.data.token;
-          var decode = VueJwtDecode.decode(result.data.token);
-          localStorage.setItem("token", result.data.token);
-          localStorage.setItem("name", decode.name);
-          localStorage.setItem("email", decode.email);
+
+          var token = this.CryptoJS.AES.encrypt(
+            result.data.token,
+            process.env.VUE_APP_APP_KEY
+          );
+
+          var decode = this.parseJwt(result.data.token);
+           //akifkadioglu@gmail.com
+          localStorage.setItem("token", token);
+          localStorage.setItem("name", decode.Name);
+          localStorage.setItem("role", decode.Role);
           this.$router.push({ name: "Home" });
         })
-        .catch(() => {
-          alert(
-            "Something went wrong\n-check your password\n-check are you active user"
-          );
+        .catch((err) => {
+          console.log(err);
+          alert(err.response.data.message);
         });
       this.isLoading = false;
     },

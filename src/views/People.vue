@@ -12,11 +12,15 @@
           <v-card-title primary-title>
             <div>Esnaflar</div>
           </v-card-title>
-          <v-card-subtitle> Esnaf sayısı: 51</v-card-subtitle>
-          <v-list-item two-line>
+          <v-card-subtitle> Esnaf sayısı: {{ ihvan.length }}</v-card-subtitle>
+          <v-list-item two-line v-for="(item, index) in esnaf" :key="index">
             <v-list-item-content>
-              <v-list-item-title>Esnaf adı</v-list-item-title>
-              <v-list-item-subtitle>Hakkında bilgi</v-list-item-subtitle>
+              <v-list-item-title>
+                {{ item.Name }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ item.Information }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-card-actions>
               <v-btn
@@ -24,7 +28,7 @@
                 small
                 color="primary"
                 icon
-                @click="selectSomeone"
+                @click="selectSomeone(index, false)"
               >
                 <v-icon>mdi-information-outline</v-icon>
               </v-btn>
@@ -37,11 +41,15 @@
           <v-card-title primary-title>
             <div>İhvanlar</div>
           </v-card-title>
-          <v-card-subtitle> ihvan sayısı: 91 </v-card-subtitle>
-          <v-list-item two-line>
+          <v-card-subtitle> ihvan sayısı: {{ ihvan.length }} </v-card-subtitle>
+          <v-list-item two-line v-for="(item, index) in ihvan" :key="index">
             <v-list-item-content>
-              <v-list-item-title>Ihvan adı</v-list-item-title>
-              <v-list-item-subtitle>Hakkında bilgi</v-list-item-subtitle>
+              <v-list-item-title>
+                {{ item.Name }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ item.Information }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn
@@ -49,7 +57,7 @@
                 small
                 color="primary"
                 icon
-                @click="selectSomeone"
+                @click="selectSomeone(index, true)"
               >
                 <v-icon>mdi-information-outline</v-icon>
               </v-btn>
@@ -60,11 +68,13 @@
     </div>
     <Information
       :isDialogOpen="isInformationDialogOpen"
+      :person="selectedPerson"
       @closeDialog="closeDialog"
     />
     <AddSomeone
       :isDialogOpen="isAddSomeoneDialogOpen"
       @closeDialog="closeDialog"
+      @addedPeople="addedPeople"
     />
   </div>
 </template>
@@ -77,15 +87,26 @@ export default {
     Information,
     AddSomeone,
   },
+  mounted() {
+    this.getPeople();
+  },
   data() {
     return {
+      people: [],
+      ihvan: [],
+      esnaf: [],
       isInformationDialogOpen: false,
       isAddSomeoneDialogOpen: false,
+      selectedPerson: {
+        Name: "",
+        Information: "",
+      },
     };
   },
   methods: {
-    selectSomeone() {
+    selectSomeone(index, role) {
       this.isInformationDialogOpen = true;
+      this.selectedPerson = role ? this.ihvan[index] : this.esnaf[index];
     },
     addSomeone() {
       this.isAddSomeoneDialogOpen = true;
@@ -93,6 +114,20 @@ export default {
     closeDialog() {
       this.isAddSomeoneDialogOpen = false;
       this.isInformationDialogOpen = false;
+    },
+    getPeople() {
+      this.axios
+        .get("/people")
+        .then((result) => {
+          this.ihvan = result.data.people.filter((x) => x.Role);
+          this.esnaf = result.data.people.filter((x) => !x.Role);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    addedPeople(value) {
+      this.people.unshift(value);
     },
   },
 };

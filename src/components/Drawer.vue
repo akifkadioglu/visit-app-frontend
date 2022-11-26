@@ -14,8 +14,11 @@
                 <v-icon>mdi-account</v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
-                <h6>Kullanıcı adı</h6>
-                <v-list-item-subtitle>Rol</v-list-item-subtitle>
+                <h6>{{ name }}</h6>
+                <v-list-item-subtitle>
+                  <div v-if="role">Yönetici</div>
+                  <div v-else>Normal</div>
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
@@ -34,7 +37,9 @@
         </v-list>
         <template v-slot:append>
           <div class="pa-2">
-            <v-btn color="error" block dark elevation="0"> Çıkış yap </v-btn>
+            <v-btn @click="logout" color="error" block dark elevation="0">
+              Çıkış yap
+            </v-btn>
           </div>
         </template>
       </v-navigation-drawer>
@@ -52,6 +57,10 @@ export default {
   },
 
   methods: {
+    logout() {
+      localStorage.clear();
+      this.$router.push({ name: "Login" });
+    },
     changeRoute(newRoute) {
       if (newRoute != "Login") {
         if (
@@ -68,6 +77,8 @@ export default {
       drawer: false,
       group: null,
       isLoginning: false,
+      role: localStorage.getItem("role") === "true",
+      name: localStorage.getItem("name"),
       routes: [
         {
           name: "Ana sayfa",
@@ -88,6 +99,11 @@ export default {
           name: "Ziyaretler",
           icon: "mdi-walk",
           route: "Visits",
+        },
+        {
+          name: "Sektörler",
+          icon: "mdi-briefcase",
+          route: "Sectors",
         },
         {
           name: "Kişiler",

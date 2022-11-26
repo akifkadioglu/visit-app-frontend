@@ -79,18 +79,22 @@ export default {
       if (
         this.registerForm.password != this.registerForm.password_confirmation
       ) {
-        alert("Passwords do not match!");
+        alert("Şifreler uyuşmuyor!");
         this.isLoading = false;
         return;
       }
       await this.axios
         .post("register", this.registerForm)
-        .then(() => {
-          alert("Your account has been created, check your email.");
-          this.$router.push({ name: "Login" });
+        .then((response) => {
+          alert(
+            "Sistemimize hoş geldiniz " +
+              response.data.personnel.Name +
+              ", lütfen hesabınızın onaylanmasını bekleyin"
+          );
+          this.$emit("registered");
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
       this.isLoading = false;
     },
