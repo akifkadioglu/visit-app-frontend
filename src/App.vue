@@ -18,6 +18,57 @@ export default {
   components: {
     Drawer,
   },
+  mounted() {
+    this.getPeople();
+    this.getSectors();
+    this.getPersonnels();
+    this.getRoles();
+  },
+
+  methods: {
+    getPeople() {
+      this.axios
+        .get("/people")
+        .then((result) => {
+          this.$store.state.people = result.data.people;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getSectors() {
+      this.axios
+        .get("/sectors")
+        .then((result) => {
+          this.$store.state.sectors = result.data.sectors;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getPersonnels() {
+      this.axios
+        .get("/personnels")
+        .then((result) => {
+          this.$store.state.personnels = result.data.personnels;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getRoles() {
+      this.$store.state.roles = [
+        {
+          Name: "Ihvan",
+          Role: true,
+        },
+        {
+          Name: "Esnaf",
+          Role: false,
+        },
+      ];
+    },
+  },
 };
 </script>
 <style>

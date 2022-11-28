@@ -4,10 +4,12 @@
       <div class="col-sm-3">
         <v-card class="mx-auto scroll" max-width="400" max-height="90vh" tile>
           <v-subheader>ESNAFLAR</v-subheader>
-          <v-list-item two-line>
+          <v-list-item two-line v-for="(item, index) in esnaf" :key="index">
             <v-list-item-content>
-              <v-list-item-title>Esnaf adı</v-list-item-title>
-              <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
+              <v-list-item-title>{{ item.Name }}</v-list-item-title>
+              <v-list-item-subtitle>
+                {{ item.Information }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn icon @click="openSheet">
@@ -47,10 +49,12 @@
       <div class="col-sm-3">
         <v-card class="mx-auto scroll" max-width="400" max-height="90vh" tile>
           <v-subheader>İHVANLAR</v-subheader>
-          <v-list-item two-line>
+          <v-list-item two-line v-for="(item, index) in ihvan" :key="index">
             <v-list-item-content>
-              <v-list-item-title>İhvan adı</v-list-item-title>
-              <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
+              <v-list-item-title> {{ item.Name }} </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ item.Information }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn icon @click="openSheet">
@@ -80,7 +84,17 @@ export default {
   data() {
     return {
       isSheetOpen: false,
+      ihvan: [],
+      esnaf: [],
     };
+  },
+  watch: {
+    "$store.state.people": {
+      handler: function (newValue) {
+        this.classifyingPeople(newValue);
+      },
+      deep: true,
+    },
   },
   methods: {
     closeSheet() {
@@ -88,6 +102,15 @@ export default {
     },
     openSheet() {
       this.isSheetOpen = true;
+    },
+    classifyingPeople(people) {
+      this.ihvan = people.filter((x) => x.Role);
+      this.esnaf = people.filter((x) => !x.Role);
+      console.log(this.ihvan);
+      console.log(this.esnaf);
+    },
+    dailyVisits() {
+      
     },
   },
 };

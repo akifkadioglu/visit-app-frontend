@@ -12,7 +12,7 @@
           <v-card-title primary-title>
             <div>Esnaflar</div>
           </v-card-title>
-          <v-card-subtitle> Esnaf sayısı: {{ ihvan.length }}</v-card-subtitle>
+          <v-card-subtitle> Esnaf sayısı: {{ esnaf.length }}</v-card-subtitle>
           <v-list-item two-line v-for="(item, index) in esnaf" :key="index">
             <v-list-item-content>
               <v-list-item-title>
@@ -69,7 +69,10 @@
     <Information
       :isDialogOpen="isInformationDialogOpen"
       :person="selectedPerson"
+      :selectedPersonIndex="selectedPersonIndex"
       @closeDialog="closeDialog"
+      @updatedPeople="updatedPeople"
+      @deletedPeople="deletedPeople"
     />
     <AddSomeone
       :isDialogOpen="isAddSomeoneDialogOpen"
@@ -88,7 +91,7 @@ export default {
     AddSomeone,
   },
   mounted() {
-    this.getPeople();
+    this.people = this.$store.state.people;
   },
   data() {
     return {
@@ -97,16 +100,23 @@ export default {
       esnaf: [],
       isInformationDialogOpen: false,
       isAddSomeoneDialogOpen: false,
-      selectedPerson: {
-        Name: "",
-        Information: "",
-      },
+      selectedPerson: {},
+      selectedPersonIndex: 0,
     };
+  },
+  watch: {
+    "$store.state.people": {
+      handler: function (newValue) {
+        this.classifyingPeople(newValue);
+      },
+      deep: true,
+    },
   },
   methods: {
     selectSomeone(index, role) {
       this.isInformationDialogOpen = true;
       this.selectedPerson = role ? this.ihvan[index] : this.esnaf[index];
+      this.selectedPersonIndex = index;
     },
     addSomeone() {
       this.isAddSomeoneDialogOpen = true;
@@ -115,19 +125,30 @@ export default {
       this.isAddSomeoneDialogOpen = false;
       this.isInformationDialogOpen = false;
     },
-    getPeople() {
-      this.axios
-        .get("/people")
-        .then((result) => {
-          this.ihvan = result.data.people.filter((x) => x.Role);
-          this.esnaf = result.data.people.filter((x) => !x.Role);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    classifyingPeople(people) {
+      this.ihvan = people.filter((x) => x.Role);
+      this.esnaf = people.filter((x) => !x.Role);
     },
+
     addedPeople(value) {
       this.people.unshift(value);
+    },
+
+    deletedPeople(index, isIhvan) {
+      if (isIhvan) {
+        this.ihvan.splice(index, 1);
+      } else {
+        this.esnaf.splice(index, 1);
+      }
+      this.people = this.ihvan.concat(this.esnaf);
+    },
+    updatedPeople(index, isIhvan, newValue) {
+      if (isIhvan) {
+        this.ihvan[index] = newValue;
+      } else {
+        this.esnaf[index] = newValue;
+      }
+      this.people = this.ihvan.concat(this.esnaf);
     },
   },
 };

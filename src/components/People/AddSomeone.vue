@@ -54,7 +54,7 @@
                 rounded
                 dense
                 v-model="form.SectorID"
-                :items="sectors"
+                :items="this.$store.state.sectors"
                 item-value="ID"
                 item-text="Name"
                 menu-props="auto"
@@ -75,18 +75,18 @@
                 rounded
                 dense
                 v-model="form.Role"
-                :items="roles"
+                :items="this.$store.state.roles"
                 item-value="Role"
                 item-text="Name"
                 menu-props="auto"
                 label="Rol"
                 hide-details
-                prepend-icon="mdi-briefcase-outline"
+                prepend-icon="mdi-script-text-outline"
                 single-line
               >
                 <template v-slot:no-data>
                   <small class="m-3">
-                    <b>Kullanılabilecek hiç sektör yok!</b>
+                    <b>Kullanılabilecek hiç Rol yok!</b>
                   </small>
                 </template>
               </v-select>
@@ -141,9 +141,7 @@ export default {
       default: false,
     },
   },
-  mounted() {
-    this.getSectors();
-  },
+  
   data() {
     return {
       form: {
@@ -156,18 +154,6 @@ export default {
         Role: "",
         Information: "",
       },
-      roles: [
-        {
-          Name: "Ihvan",
-          Role: true,
-        },
-        {
-          Name: "Esnaf",
-          Role: false,
-        },
-      ],
-      sectors: [],
-      people: [],
       isLoading: false,
     };
   },
@@ -177,23 +163,23 @@ export default {
       await this.axios
         .post("/add-people", this.form)
         .then((result) => {
-          this.$emit("addedPeople",result.data.people);
-          console.log(result);
+          this.$emit("addedPeople", result.data.people);
+          this.form = {
+            Name: "",
+            Phone: "",
+            SectorID: "",
+            Latitude: "",
+            Longitude: "",
+            Address: "",
+            Role: "",
+            Information: "",
+          };
+          this.$emit("closeDialog");
         })
         .catch((err) => {
           console.log(err);
         });
       this.isLoading = false;
-    },
-    getSectors() {
-      this.axios
-        .get("/sectors")
-        .then((result) => {
-          this.sectors = result.data.sectors;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     },
   },
 };
