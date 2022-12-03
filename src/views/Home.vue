@@ -51,7 +51,7 @@
           <v-subheader>İHVANLAR</v-subheader>
           <v-list-item two-line v-for="(item, index) in ihvan" :key="index">
             <v-list-item-content>
-              <v-list-item-title> {{ item.Name }} </v-list-item-title>
+              <v-list-item-title> {{ item.Name }}</v-list-item-title>
               <v-list-item-subtitle>
                 {{ item.Information }}
               </v-list-item-subtitle>
@@ -66,9 +66,9 @@
       </div>
     </div>
     <AddToVisits
-      :addToVisits="isSheetOpen"
-      @closeSheet="closeSheet"
-      :user="{
+        :addToVisits="isSheetOpen"
+        @closeSheet="closeSheet"
+        :user="{
         name: 'Başlık',
         description:
           'çok çokçok çokçok çokçok çokçok çokçok çokçok çokçok çok uzun açıklama',
@@ -79,21 +79,24 @@
 
 <script>
 import AddToVisits from "../components/Home/AddToVisits.vue";
+
 export default {
-  components: { AddToVisits },
+  components: {AddToVisits},
   data() {
     return {
+      selectedPerson: {},
       isSheetOpen: false,
       ihvan: [],
       esnaf: [],
     };
   },
   watch: {
-    "$store.state.people": {
+    "$store.state.userPeople": {
       handler: function (newValue) {
         this.classifyingPeople(newValue);
       },
       deep: true,
+      immediate: true,
     },
   },
   methods: {
@@ -104,13 +107,13 @@ export default {
       this.isSheetOpen = true;
     },
     classifyingPeople(people) {
-      this.ihvan = people.filter((x) => x.Role);
-      this.esnaf = people.filter((x) => !x.Role);
-      console.log(this.ihvan);
-      console.log(this.esnaf);
+      if (people.length > 0) {
+        this.ihvan = people.filter((x) => x.Role);
+        this.esnaf = people.filter((x) => !x.Role);
+      }
     },
     dailyVisits() {
-      
+
     },
   },
 };

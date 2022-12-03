@@ -4,16 +4,15 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    people: [],
-    personnels: [],
-    sectors: [],
-    roles: [],
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+    state: {
+        isAdmin: false,
+        people: [],
+        personnels: [],
+        sectors: [],
+        roles: [],
+        userPeople: [],
+    },
+    mutations: {},
+    actions: {},
+    modules: {}
 })

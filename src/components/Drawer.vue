@@ -4,7 +4,7 @@
       <v-app-bar color="primary" dark>
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
-        <v-toolbar-title class="title"> Takip Uygulaması </v-toolbar-title>
+        <v-toolbar-title class="title"> Takip Uygulaması</v-toolbar-title>
       </v-app-bar>
       <v-navigation-drawer v-model="drawer" absolute temporary>
         <v-list nav dense>
@@ -23,10 +23,10 @@
             </v-list-item>
 
             <v-list-item
-              v-for="(item, index) in routes"
-              :key="index"
-              :to="{ name: item.route }"
-              exact
+                v-for="(item, index) in routes"
+                :key="index"
+                :to="{ name: item.route }"
+                exact
             >
               <v-list-item-avatar>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -55,29 +55,16 @@ export default {
       return this.$route.name;
     },
   },
-
-  methods: {
-    logout() {
-      localStorage.clear();
-      this.$router.push({ name: "Login" });
-    },
-    changeRoute(newRoute) {
-      if (newRoute != "Login") {
-        if (
-          localStorage.getItem("token") == null ||
-          localStorage.getItem("token") == ""
-        ) {
-          this.$router.push({ name: "Login" });
-        }
-      }
-    },
+  mounted() {
+    this.role = localStorage.getItem("role") === "true"
+    this.$store.state.isAdmin = localStorage.getItem("role") === "true"
   },
   data() {
     return {
       drawer: false,
       group: null,
       isLoginning: false,
-      role: localStorage.getItem("role") === "true",
+      role: false,
       name: localStorage.getItem("name"),
       routes: [
         {
@@ -117,6 +104,22 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    logout() {
+      localStorage.clear();
+      this.$router.push({name: "Login"});
+    },
+    changeRoute(newRoute) {
+      if (newRoute != "Login") {
+        if (
+            localStorage.getItem("token") == null ||
+            localStorage.getItem("token") == ""
+        ) {
+          this.$router.push({name: "Login"});
+        }
+      }
+    },
   },
 };
 </script>

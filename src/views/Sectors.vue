@@ -15,11 +15,11 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-btn
-              depressed
-              small
-              color="error"
-              icon
-              @click="deleteSector(item.ID, index)"
+                depressed
+                small
+                color="error"
+                icon
+                @click="deleteSector(item.ID, index)"
             >
               <v-icon>mdi-delete-outline</v-icon>
             </v-btn>
@@ -28,9 +28,9 @@
       </v-card>
     </div>
     <AddSector
-      :isDialogOpen="isAddSectorDialogOpen"
-      @closeDialog="closeDialog"
-      @addedSector="addedSector"
+        :isDialogOpen="isAddSectorDialogOpen"
+        @closeDialog="closeDialog()"
+        @addedSector="addedSector"
     />
   </div>
 </template>
@@ -43,7 +43,7 @@ export default {
     AddSector,
   },
   mounted() {
-    this.getSectors();
+    this.sectors = this.$store.state.sectors;
   },
   data() {
     return {
@@ -51,39 +51,42 @@ export default {
       isAddSectorDialogOpen: false,
     };
   },
+  watch: {
+    "$store.state.sectors": {
+      handler: function () {
+        this.sectors = this.$store.state.sectors;
+      }
+    }
+  },
   methods: {
+    // EMIT ACTIONS
     closeDialog() {
       this.isAddSectorDialogOpen = false;
-    },
-    getSectors() {
-      this.axios
-        .get("/sectors")
-        .then((result) => {
-          this.sectors = result.data.sectors;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     addedSector(value) {
       this.sectors.unshift(value);
     },
+
+    // HTTP ACTIONS
     deleteSector(id, index) {
-      this.axios
-        .delete("/delete-sector", {
+      if (
+          confirm(
+              this.sectors[index].Name +
+              " adlı sektörün silinmesini gerçekten istiyor musun?"
+          )
+      ) {
+        this.axios.delete("/delete-sector", {
           params: {
             SectorID: id,
           },
-        })
-        .then(() => {
+        }).then(() => {
           this.sectors.splice(index, 1);
-        })
-        .catch((err) => {
+        }).catch((err) => {
           console.log(err);
         });
+      }
     },
   },
-};
+}
+;
 </script>
-
-<style></style>

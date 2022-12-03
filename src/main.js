@@ -8,15 +8,16 @@ import 'vuetify/dist/vuetify.min.css'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import VueApexCharts from 'vue-apexcharts'
 import VueJwtDecode from 'vue-jwt-decode'
-
-require('dotenv').config()
-const moment = require('moment')
-require('moment/locale/tr')
 import VueCryptojs from 'vue-cryptojs'
-
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import {globalFunc} from './globalFunc'
+require('dotenv').config()
 require('./http-common');
+require('moment/locale/tr')
+const moment = require('moment')
+
+Vue.prototype.$func = globalFunc
 Vue.use(VueJwtDecode)
 Vue.use(VueAxios, axios)
 

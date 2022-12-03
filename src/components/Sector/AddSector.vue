@@ -54,15 +54,11 @@ export default {
       default: false,
     },
   },
-  mounted() {
-    this.getSectors();
-  },
   data() {
     return {
       form: {
         Name: "",
       },
-      sectors: [],
       isLoading: false,
     };
   },
@@ -80,17 +76,7 @@ export default {
           console.log(err);
         });
       this.isLoading = false;
-    },
-    getSectors() {
-      this.axios
-        .get("/sectors")
-        .then((result) => {
-          this.sectors = result.data.sectors;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
+    }
   },
 };
 </script>

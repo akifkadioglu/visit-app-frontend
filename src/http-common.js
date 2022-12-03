@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const AES = require('crypto-js/aes');
 var CryptoJS = require("crypto-js");
 
@@ -12,4 +13,4 @@ if (token != '') {
 
     axios.defaults.headers.common['Authorization'] = "Bearer " + token;
 }
-axios.defaults.baseURL = "http://127.0.0.1:9000/";
+axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;

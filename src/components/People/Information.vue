@@ -7,74 +7,80 @@
           <v-card-subtitle class="mt-2">Kişinin bilgileri;</v-card-subtitle>
           <v-card-text>
             <v-text-field
-              v-model="person.Name"
-              placeholder="İsim"
-              filled
-              rounded
-              dense
+                v-model="person.Name"
+                @change="updatePeople"
+                placeholder="İsim"
+                filled
+                rounded
+                dense
             />
             <v-text-field
-              v-model="person.Address"
-              placeholder="Açık Adres"
-              filled
-              rounded
-              dense
+                v-model="person.Address"
+                @change="updatePeople"
+                placeholder="Açık Adres"
+                filled
+                rounded
+                dense
             />
             <v-text-field
-              v-model="person.Phone"
-              placeholder="Telefon"
-              filled
-              rounded
-              dense
+                v-model="person.Phone"
+                @change="updatePeople"
+                placeholder="Telefon"
+                filled
+                rounded
+                dense
             />
             <a
-              :href="
+                :href="
                 'https://www.google.com/maps/dir/' +
                 person.Latitude +
                 ',' +
                 person.Longitude
               "
-              target="_blank"
-              style="text-decoration: none"
+                target="_blank"
+                style="text-decoration: none"
             >
               Konumu gör
             </a>
             <div class="navbar">
               <v-text-field
-                class="select"
-                v-model="person.Latitude"
-                placeholder="Enlem"
-                prepend-icon="mdi-latitude"
-                filled
-                rounded
-                dense
+                  class="select"
+                  v-model="person.Latitude"
+                  @change="updatePeople"
+                  placeholder="Enlem"
+                  prepend-icon="mdi-latitude"
+                  filled
+                  rounded
+                  dense
               />
               <v-text-field
-                class="select"
-                v-model="person.Longitude"
-                placeholder="Boylam"
-                prepend-icon="mdi-longitude"
-                filled
-                rounded
-                dense
+                  class="select"
+                  v-model="person.Longitude"
+                  @change="updatePeople"
+                  placeholder="Boylam"
+                  prepend-icon="mdi-longitude"
+                  filled
+                  rounded
+                  dense
               />
             </div>
 
             <div class="navbar">
               <v-select
-                class="select"
-                filled
-                rounded
-                dense
-                v-model="person.SectorID"
-                :items="this.$store.state.sectors"
-                item-value="ID"
-                item-text="Name"
-                menu-props="auto"
-                label="Sektör"
-                hide-details
-                prepend-icon="mdi-briefcase-outline"
-                single-line
+                  class="select"
+                  filled
+                  rounded
+                  dense
+                  v-model="person.SectorID"
+                  @change="updatePeople"
+                  :items="this.$store.state.sectors"
+                  item-value="ID"
+                  item-text="Name"
+                  menu-props="auto"
+                  label="Sektör"
+                  hide-details
+                  prepend-icon="mdi-briefcase-outline"
+                  single-line
               >
                 <template v-slot:no-data>
                   <small class="m-3">
@@ -83,19 +89,20 @@
                 </template>
               </v-select>
               <v-select
-                class="select"
-                filled
-                rounded
-                dense
-                v-model="person.Role"
-                :items="this.$store.state.roles"
-                item-value="Role"
-                item-text="Name"
-                menu-props="auto"
-                label="Rol"
-                hide-details
-                prepend-icon="mdi-script-text-outline"
-                single-line
+                  class="select"
+                  filled
+                  rounded
+                  dense
+                  v-model="person.Role"
+                  @change="updatePeople"
+                  :items="this.$store.state.roles"
+                  item-value="Role"
+                  item-text="Name"
+                  menu-props="auto"
+                  label="Rol"
+                  hide-details
+                  prepend-icon="mdi-script-text-outline"
+                  single-line
               >
                 <template v-slot:no-data>
                   <small class="m-3">
@@ -105,20 +112,21 @@
               </v-select>
             </div>
             <v-select
-              class="mt-3"
-              filled
-              rounded
-              v-if="isAuthUserAdmin"
-              dense
-              v-model="person.PersonnelID"
-              :items="this.$store.state.personnels"
-              item-value="ID"
-              item-text="Name"
-              menu-props="auto"
-              label="Personel"
-              hide-details
-              prepend-icon="mdi-account-outline"
-              single-line
+                class="mt-3"
+                filled
+                rounded
+                v-if="isAuthUserAdmin"
+                dense
+                v-model="person.PersonnelID"
+                @change="updatePeople"
+                :items="this.$store.state.personnels"
+                item-value="ID"
+                item-text="Name"
+                menu-props="auto"
+                label="Personel"
+                hide-details
+                prepend-icon="mdi-account-outline"
+                single-line
             >
               <template v-slot:no-data>
                 <small class="m-3">
@@ -127,54 +135,40 @@
               </template>
             </v-select>
             <v-textarea
-              name="input-7-1"
-              filled
-              v-model="person.Information"
-              rounded
-              class="mt-5"
-              auto-grow
-              placeholder="Kişi hakkında bilgi girin"
+                name="input-7-1"
+                filled
+                v-model="person.Information"
+                @change="updatePeople"
+                rounded
+                class="mt-5"
+                auto-grow
+                placeholder="Kişi hakkında bilgi girin"
             />
           </v-card-text>
 
           <v-card-actions>
-            <v-spacer />
+            <v-spacer/>
             <v-btn
-              color="secondary"
-              depressed
-              @click.native="$emit('closeDialog')"
+                color="secondary"
+                depressed
+                @click.native="$emit('closeDialog')"
             >
               Kapat
             </v-btn>
             <v-btn
-              color="error"
-              width="100px"
-              class="ml-5"
-              depressed
-              @click="deletePeople"
-              :disabled="isLoading"
+                color="error"
+                width="100px"
+                class="ml-5"
+                depressed
+                @click="deletePeople"
+                :disabled="isLoading"
             >
               <v-progress-circular
-                v-if="isLoading"
-                indeterminate
-                color="primary"
+                  v-if="isLoading"
+                  indeterminate
+                  color="primary"
               />
               <div v-else>Sil</div>
-            </v-btn>
-            <v-btn
-              color="primary"
-              depressed
-              width="100px"
-              class="ml-5"
-              :disabled="isLoading"
-              @click="updatePeople"
-            >
-              <v-progress-circular
-                v-if="isLoading"
-                indeterminate
-                color="primary"
-              />
-              <div v-else>Düzenle</div>
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -222,59 +216,58 @@ export default {
   methods: {
     async deletePeople() {
       if (
-        confirm(
-          this.person.Name +
-            " adlı kişinin silinmesini gerçekten istiyor musun?"
-        )
+          confirm(
+              this.person.Name +
+              " adlı kişinin silinmesini gerçekten istiyor musun?"
+          )
       ) {
         this.isLoading = true;
         await this.axios
-          .delete("/delete-people", {
-            params: {
-              PeopleID: this.person.ID,
-            },
-          })
-          .then(() => {
-            this.$emit(
-              "deletedPeople",
-              this.selectedPersonIndex,
-              this.person.Role
-            );
-            this.$emit("closeDialog");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+            .delete("/delete-people", {
+              params: {
+                PeopleID: this.person.ID,
+              },
+            })
+            .then(() => {
+              this.$emit(
+                  "deletedPeople",
+                  this.selectedPersonIndex,
+                  this.person.Role
+              );
+              this.$emit("closeDialog");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         this.isLoading = false;
       }
     },
     async updatePeople() {
       this.isLoading = true;
       await this.axios
-        .put("/update-people", {
-          PeopleID: this.person.ID,
-          Name: this.person.Name,
-          PersonnelID: this.person.PersonnelID,
-          Latitude: this.person.Latitude,
-          Longitude: this.person.Longitude,
-          SectorID: this.person.SectorID,
-          Address: this.person.Address,
-          Role: this.person.Role,
-          Phone: this.person.Phone,
-          Information: this.person.Information,
-        })
-        .then(() => {
-          this.$emit(
-            "updatedPeople",
-            this.selectedPersonIndex,
-            this.person.Role,
-            this.person
-          );
-          this.$emit("closeDialog");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          .put("/update-people", {
+            PeopleID: this.person.ID,
+            Name: this.person.Name,
+            PersonnelID: this.person.PersonnelID,
+            Latitude: this.person.Latitude,
+            Longitude: this.person.Longitude,
+            SectorID: this.person.SectorID,
+            Address: this.person.Address,
+            Role: this.person.Role,
+            Phone: this.person.Phone,
+            Information: this.person.Information,
+          })
+          .then(() => {
+            this.$emit(
+                "updatedPeople",
+                this.selectedPersonIndex,
+                this.person.Role,
+                this.person
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       this.isLoading = false;
     },
   },
