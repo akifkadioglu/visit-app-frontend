@@ -11,6 +11,7 @@ export default new Vuex.Store({
         sectors: [],
         roles: [],
         userPeople: [],
+        dailyVisits: [],
     },
     mutations: {},
     actions: {},

@@ -22,24 +22,24 @@
       <div class="col-sm-6">
         <v-card class="mx-auto scroll" max-height="90vh" tile>
           <v-subheader>BUGÜN ZİYARET EDİLENLER</v-subheader>
-          <v-list-item two-line>
+          <v-list-item
+            two-line
+            v-for="(item, index) in $store.state.dailyVisits"
+            :key="index"
+          >
             <v-list-item-content>
-              <v-list-item-title>Esnaf adı</v-list-item-title>
-              <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
+              <v-list-item-title>{{ item.People.Name }}</v-list-item-title>
+              <v-list-item-subtitle>
+                {{ item.People.Information }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn icon>
-                <v-icon color="error">mdi-delete-outline</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-          <v-list-item two-line>
-            <v-list-item-content>
-              <v-list-item-title>Esnaf adı</v-list-item-title>
-              <v-list-item-subtitle>Hakkında açıklama</v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn icon>
+              <v-progress-circular
+                v-if="isLoading"
+                indeterminate
+                color="primary"
+              />
+              <v-btn v-else icon @click="deleteVisit(item, index)">
                 <v-icon color="error">mdi-delete-outline</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -57,7 +57,7 @@
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn icon @click="openSheet">
+              <v-btn icon @click="openSheet(item)">
                 <v-icon color="primary">mdi-plus</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -66,12 +66,13 @@
       </div>
     </div>
     <AddToVisits
-        :addToVisits="isSheetOpen"
-        @closeSheet="closeSheet"
-        :user="{
-        name: 'Başlık',
-        description:
-          'çok çokçok çokçok çokçok çokçok çokçok çokçok çokçok çok uzun açıklama',
+      :addToVisits="isSheetOpen"
+      @closeSheet="closeSheet"
+      @addedVisit="addedVisit"
+      :user="{
+        id: selectedPerson.id,
+        name: selectedPerson.name,
+        description: selectedPerson.description,
       }"
     />
   </div>
@@ -81,13 +82,18 @@
 import AddToVisits from "../components/Home/AddToVisits.vue";
 
 export default {
-  components: {AddToVisits},
+  components: { AddToVisits },
   data() {
     return {
-      selectedPerson: {},
+      selectedPerson: {
+        id: 0,
+        name: "",
+        description: "",
+      },
       isSheetOpen: false,
       ihvan: [],
       esnaf: [],
+      isLoading: false,
     };
   },
   watch: {
@@ -103,7 +109,22 @@ export default {
     closeSheet() {
       this.isSheetOpen = false;
     },
-    openSheet() {
+    async deleteVisit(item, index) {
+      this.isLoading = true;
+      await this.axios
+        .delete("delete-visit", { params: { VisitID: item.ID } })
+        .then(() => {
+          this.$store.state.dailyVisits.splice(index, 1);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.isLoading = false;
+    },
+    openSheet(item) {
+      this.selectedPerson.id = item.ID;
+      this.selectedPerson.name = item.Name;
+      this.selectedPerson.description = item.Information;
       this.isSheetOpen = true;
     },
     classifyingPeople(people) {
@@ -112,8 +133,8 @@ export default {
         this.esnaf = people.filter((x) => !x.Role);
       }
     },
-    dailyVisits() {
-
+    addedVisit(item) {
+      this.$store.state.dailyVisits.unshift(item);
     },
   },
 };

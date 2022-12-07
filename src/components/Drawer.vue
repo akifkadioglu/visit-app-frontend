@@ -23,10 +23,10 @@
             </v-list-item>
 
             <v-list-item
-                v-for="(item, index) in routes"
-                :key="index"
-                :to="{ name: item.route }"
-                exact
+              v-for="(item, index) in routes"
+              :key="index"
+              :to="{ name: item.route }"
+              exact
             >
               <v-list-item-avatar>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -56,8 +56,9 @@ export default {
     },
   },
   mounted() {
-    this.role = localStorage.getItem("role") === "true"
-    this.$store.state.isAdmin = localStorage.getItem("role") === "true"
+    this.role = this.$helpers.returnDecryptedLocalStorage("role") === "true";
+    this.$store.state.isAdmin =
+      this.$helpers.returnDecryptedLocalStorage("role") === "true";
   },
   data() {
     return {
@@ -65,42 +66,49 @@ export default {
       group: null,
       isLoginning: false,
       role: false,
-      name: localStorage.getItem("name"),
+      name: this.$helpers.returnDecryptedLocalStorage("name"),
       routes: [
         {
           name: "Ana sayfa",
           icon: "mdi-home",
           route: "Home",
+          required: true,
         },
         {
           name: "Haritalar",
           icon: "mdi-google-maps",
           route: "Maps",
+          required: true,
         },
         {
           name: "Takvim",
           icon: "mdi-calendar",
           route: "Calendar",
+          required: true,
         },
         {
           name: "Ziyaretler",
           icon: "mdi-walk",
           route: "Visits",
+          required: true,
         },
         {
           name: "Sektörler",
           icon: "mdi-briefcase",
           route: "Sectors",
+          required: true,
         },
         {
           name: "Kişiler",
           icon: "mdi-account-group",
           route: "People",
+          required: true,
         },
         {
           name: "Personeller",
           icon: "mdi-account-multiple",
           route: "Personnels",
+          required: true,
         },
       ],
     };
@@ -108,15 +116,15 @@ export default {
   methods: {
     logout() {
       localStorage.clear();
-      this.$router.push({name: "Login"});
+      this.$router.push({ name: "Login" });
     },
     changeRoute(newRoute) {
       if (newRoute != "Login") {
         if (
-            localStorage.getItem("token") == null ||
-            localStorage.getItem("token") == ""
+          localStorage.getItem("token") == null ||
+          localStorage.getItem("token") == ""
         ) {
-          this.$router.push({name: "Login"});
+          this.$router.push({ name: "Login" });
         }
       }
     },

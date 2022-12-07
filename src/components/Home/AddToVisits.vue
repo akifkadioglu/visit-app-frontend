@@ -12,7 +12,9 @@
         </v-btn>
         <div class="navbar">
           <div></div>
-          <v-card-title primary-title> Ziyaret Edilenlere Ekle </v-card-title>
+          <v-card-title primary-title
+            >{{ localStorage.getItem("user_id") }}Ziyaret Edilenlere Ekle
+          </v-card-title>
           <div></div>
         </div>
 
@@ -27,14 +29,23 @@
             <v-card-text>
               <v-form ref="form">
                 <v-select
-                  v-model="form.with"
-                  :items="items"
+                  v-model="form.personnels"
+                  item-value="ID"
+                  item-text="Name"
+                  :items="
+                    $store.state.personnels.filter(
+                      (x) =>
+                        x.id !=
+                        $helpers.returnDecryptItem(
+                          localStorage.getItem('user_id')
+                        )
+                    )
+                  "
                   attach
                   chips
                   placeholder="Kimlerle beraberdin"
                   multiple
                 >
-                  
                 </v-select>
                 <v-textarea
                   v-model="form.description"
@@ -44,17 +55,24 @@
                   hint="Ziyaretin nasıl geçtiğine dair açıklama yazınız"
                 ></v-textarea>
                 <input
-                  v-model="form.date"
+                  v-model="form.VisitedAt"
                   class="form-control mt-3"
-                  type="date"
-                />
-                <input
-                  v-model="form.time"
-                  class="form-control mt-3"
-                  type="time"
+                  type="datetime-local"
                 />
                 <div class="mt-3" style="text-align: end">
-                  <v-btn color="primary" elevation="0">Gönder</v-btn>
+                  <v-progress-circular
+                    v-if="isLoading"
+                    indeterminate
+                    color="primary"
+                  />
+                  <v-btn
+                    v-else
+                    @click="postVisit"
+                    color="primary"
+                    elevation="0"
+                  >
+                    Gönder
+                  </v-btn>
                 </div>
               </v-form>
             </v-card-text>
@@ -76,6 +94,7 @@ export default {
       type: Object,
       default() {
         return {
+          id: 0,
           name: "title",
           description: "description",
         };
@@ -84,20 +103,48 @@ export default {
   },
   data() {
     return {
-      items: ["Foo", "Bar", "Fizz", "Buzz"],
       form: {
-        with: [],
+        personnels: [],
         description: "",
-        date: "",
-        time: "",
+        VisitedAt: this.returnDate(),
       },
+      isLoading: false,
     };
+  },
+  methods: {
+    returnDate() {
+      var date = new Date();
+      date.setTime(date.getTime() + 3 * 60 * 60 * 1000);
+      return date.toISOString().substring(0, 16);
+    },
+    async postVisit() {
+      this.isLoading = true;
+      await this.axios
+        .post("visit-someone", {
+          Personnels: this.form.personnels,
+          Description: this.form.description,
+          VisitedAt: this.form.VisitedAt,
+          PeopleID: this.user.id,
+        })
+        .then((result) => {
+          this.$emit("addedVisit", result.data.visits);
+          this.form = {
+            personnels: [],
+            description: "",
+            VisitedAt: this.returnDate(),
+          };
+          this.$emit("closeSheet");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.isLoading = false;
+    },
   },
 };
 </script>
 
 <style scoped>
-
 .title-overflow {
   text-overflow: ellipsis;
   overflow: hidden;

@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <v-card height="100vh">
-      <Drawer/>
+      <Drawer />
       <v-main>
         <transition name="fade" mode="out-in">
-          <router-view/>
+          <router-view />
         </transition>
       </v-main>
     </v-card>
@@ -20,11 +20,14 @@ export default {
     Drawer,
   },
   mounted() {
-    this.$func.getPeople();
-    this.$func.getSectors();
-    this.$func.getPersonnels();
-    this.$func.getRoles();
-    this.$func.getUserPeople();
+    if (localStorage.getItem("token") != null) {
+      this.$func.getPeople();
+      this.$func.getSectors();
+      this.$func.getPersonnels();
+      this.$func.getRoles();
+      this.$func.getUserPeople();
+      this.$func.dailyVisits();
+    }
   },
 };
 </script>

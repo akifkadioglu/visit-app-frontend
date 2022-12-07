@@ -23,7 +23,6 @@ const routes = [
     name: 'Home',
     component: Home
   },
-
   {
     path: '/haritalar',
     name: 'Maps',
@@ -58,7 +57,11 @@ const routes = [
     path: '/hesabim',
     name: 'Account',
     component: Account
-  }
+  },
+  {
+    path: '*',
+    redirect: '/'
+  },
 ]
 
 const router = new VueRouter({

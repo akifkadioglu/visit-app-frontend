@@ -11,13 +11,15 @@ import VueJwtDecode from 'vue-jwt-decode'
 import VueCryptojs from 'vue-cryptojs'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import {globalFunc} from './globalFunc'
+import {httpRequests} from './globalFunc'
+import {helpers} from './globalFunc'
 require('dotenv').config()
 require('./http-common');
 require('moment/locale/tr')
 const moment = require('moment')
 
-Vue.prototype.$func = globalFunc
+Vue.prototype.$func = httpRequests
+Vue.prototype.$helpers = helpers
 Vue.use(VueJwtDecode)
 Vue.use(VueAxios, axios)
 

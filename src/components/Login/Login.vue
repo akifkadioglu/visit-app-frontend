@@ -38,8 +38,6 @@
 </template>
 
 <script>
-const base64url = require("base64url");
-
 export default {
   data() {
     return {
@@ -52,13 +50,6 @@ export default {
     };
   },
   methods: {
-    parseJwt(token) {
-      try {
-        return JSON.parse(base64url.decode(token.split(".")[1]));
-      } catch (e) {
-        return null;
-      }
-    },
     async login() {
       this.isLoading = true;
       await this.axios
@@ -66,17 +57,22 @@ export default {
         .then((result) => {
           this.axios.defaults.headers.common["Authorization"] =
             `Bearer ` + result.data.token;
-
+          //akifkadioglu@mail.com
           var token = this.CryptoJS.AES.encrypt(
             result.data.token,
             process.env.VUE_APP_APP_KEY
           );
-
-          var decode = this.parseJwt(result.data.token);
-           //akifkadioglu@gmail.com
+          var decode = this.$helpers.parseJwt(result.data.token);
+          console.log(this.$helpers.returnEncryptItem(decode.Name.toString()));
+          var name = this.$helpers.returnEncryptItem(decode.Name.toString());
+          var role = this.$helpers.returnEncryptItem(decode.Role.toString());
+          var user_id = this.$helpers.returnEncryptItem(
+            decode.UserId.toString()
+          );
           localStorage.setItem("token", token);
-          localStorage.setItem("name", decode.Name);
-          localStorage.setItem("role", decode.Role);
+          localStorage.setItem("name", name);
+          localStorage.setItem("role", role);
+          localStorage.setItem("user_id", user_id);
           this.$router.push({ name: "Home" });
         })
         .catch((err) => {
