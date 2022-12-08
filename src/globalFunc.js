@@ -55,6 +55,27 @@ export const httpRequests = {
                 console.log(err);
             });
     },
+    async getAllVisits() {
+        await axios
+            .get("/visits")
+            .then((result) => {
+                store.state.AllVisits = result.data.visits;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    },
+    async getPersonnelVisits() {
+        await axios
+            .get("/personnel-visits")
+            .then((result) => {
+                store.state.personnelVisits = result.data.visits;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    },
+
 
     getRoles() {
         store.state.roles = [

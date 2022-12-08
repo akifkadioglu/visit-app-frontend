@@ -80,5 +80,17 @@ export default {
       ],
     };
   },
+  methods: {
+    async getPersonnelsVisitsByDate() {
+      await this.axios
+        .get("/personnels-visits-by-date")
+        .then((result) => {
+          this.$store.state.personnels = result.data.personnels;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
 };
 </script>

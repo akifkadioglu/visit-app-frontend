@@ -12,6 +12,9 @@ export default new Vuex.Store({
         roles: [],
         userPeople: [],
         dailyVisits: [],
+        AllVisits: [],
+        personnelVisits: [],
+        allPersonnelVisits: []
     },
     mutations: {},
     actions: {},

@@ -19,10 +19,17 @@
           ref="calendar"
           :now="today.slice(0, 10)"
           :value="today.slice(0, 10)"
-          :events="events"
+          :events="
+            this.$store.state.personnelVisits.map((x) => ({
+              name: x.People.Name,
+              start:
+                x.VisitedAt.split('T')[0] +
+                ' ' +
+                x.VisitedAt.split('T')[1].substr(0, 5),
+            }))
+          "
           type="month"
         ></v-calendar>
-        
       </v-sheet>
     </v-col>
   </v-row>
@@ -38,7 +45,7 @@ export default {
     events: [
       {
         name: "Weekly Meeting",
-        start: "2022-11-13 15:01",
+        start: "2022-12-13 15:01",
       },
     ],
   }),
@@ -46,6 +53,7 @@ export default {
     prev() {
       this.changer(-30);
     },
+
     next() {
       this.changer(30);
     },

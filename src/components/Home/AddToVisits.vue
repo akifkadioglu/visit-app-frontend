@@ -12,9 +12,7 @@
         </v-btn>
         <div class="navbar">
           <div></div>
-          <v-card-title primary-title
-            >{{ localStorage.getItem("user_id") }}Ziyaret Edilenlere Ekle
-          </v-card-title>
+          <v-card-title primary-title>Ziyaret Edilenlere Ekle </v-card-title>
           <div></div>
         </div>
 
@@ -32,15 +30,7 @@
                   v-model="form.personnels"
                   item-value="ID"
                   item-text="Name"
-                  :items="
-                    $store.state.personnels.filter(
-                      (x) =>
-                        x.id !=
-                        $helpers.returnDecryptItem(
-                          localStorage.getItem('user_id')
-                        )
-                    )
-                  "
+                  :items="$store.state.personnels.filter((x) => x.ID != userId)"
                   attach
                   chips
                   placeholder="Kimlerle beraberdin"
@@ -109,12 +99,19 @@ export default {
         VisitedAt: this.returnDate(),
       },
       isLoading: false,
+      userId: this.$helpers.returnDecryptItem(localStorage.getItem("user_id")),
     };
   },
   methods: {
+    decreaseTime(vtime) {
+      var date = new Date(vtime);
+      console.log(vtime);
+      console.log(date.toISOString());
+      return date.toISOString().substring(0, 16);
+    },
     returnDate() {
       var date = new Date();
-      date.setTime(date.getTime() + 3 * 60 * 60 * 1000);
+      date.setTime(date.getTime() + 3 * 60 * 1000 + 10800000);
       return date.toISOString().substring(0, 16);
     },
     async postVisit() {
@@ -131,8 +128,9 @@ export default {
           this.form = {
             personnels: [],
             description: "",
-            VisitedAt: this.returnDate(),
+            VisitedAt: this.decreaseTime(this.returnDate()),
           };
+
           this.$emit("closeSheet");
         })
         .catch((err) => {

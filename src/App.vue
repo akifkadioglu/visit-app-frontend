@@ -27,6 +27,10 @@ export default {
       this.$func.getRoles();
       this.$func.getUserPeople();
       this.$func.dailyVisits();
+      this.$func.getPersonnelVisits();
+      if (this.$helpers.returnDecryptedLocalStorage("role") === "true") {
+        this.$func.getAllVisits();
+      }
     }
   },
 };

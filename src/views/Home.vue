@@ -115,6 +115,11 @@ export default {
         .delete("delete-visit", { params: { VisitID: item.ID } })
         .then(() => {
           this.$store.state.dailyVisits.splice(index, 1);
+          this.$store.state.AllVisits = this.$store.state.AllVisits.filter(
+            (x) => x.ID != item.ID
+          );
+          this.$store.state.personnelVisits =
+            this.$store.state.personnelVisits.filter((x) => x.ID != item.ID);
         })
         .catch((err) => {
           console.log(err);
@@ -135,6 +140,8 @@ export default {
     },
     addedVisit(item) {
       this.$store.state.dailyVisits.unshift(item);
+      this.$store.state.AllVisits.unshift(item);
+      this.$store.state.personnelVisits.unshift(item);
     },
   },
 };
