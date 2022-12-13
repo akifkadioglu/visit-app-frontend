@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="currentRouteName != 'Login'">
-      <v-app-bar color="primary" dark>
+      <v-app-bar color="primary" dark height="62px">
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
 
         <v-toolbar-title class="title"> Takip Uygulaması</v-toolbar-title>

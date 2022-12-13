@@ -11,8 +11,8 @@ import VueJwtDecode from 'vue-jwt-decode'
 import VueCryptojs from 'vue-cryptojs'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import {httpRequests} from './globalFunc'
-import {helpers} from './globalFunc'
+import { httpRequests } from './globalFunc'
+import { helpers } from './globalFunc'
 require('dotenv').config()
 require('./http-common');
 require('moment/locale/tr')
@@ -37,7 +37,6 @@ Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
 Vue.use(Vuetify)
 Vue.config.productionTip = false
-
 
 new Vue({
   router,

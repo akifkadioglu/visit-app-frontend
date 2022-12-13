@@ -22,7 +22,8 @@
         @mouseout="currentLocation = null"
       >
         <gmap-info-window :opened="currentLocation === index">
-          {{ item.Name }}
+          <div>{{ item.Name }}</div>
+          <div>{{ item.Phone }}</div>
         </gmap-info-window>
       </GmapMarker>
     </GmapMap>
@@ -32,7 +33,7 @@
           class="action-button"
           fab
           dark
-          color="primary"
+          depressed
           v-bind="attrs"
           v-on="on"
           @click="changePeople"
@@ -44,6 +45,23 @@
       <span v-if="hasUserPeople">Tüm kişileri getir</span>
       <span v-else>Sadece benim kişilerimi getir</span>
     </v-tooltip>
+    <div class="filter-button">
+      <v-btn fab depressed dark @click="scale">
+        <v-icon dark>mdi-filter</v-icon>
+      </v-btn>
+    </div>
+    <transition name="fade" mode="in-out">
+      <div class="filter" v-if="height > 0">
+        <v-card :height="height" width="300">
+          <v-card-title primary-title>
+            <div>Sektörleri Filtrele</div>
+          </v-card-title>
+          <v-card-actions>
+            <v-btn flat color="primary" @click="scale">Kapat</v-btn>
+          </v-card-actions>
+        </v-card>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -59,10 +77,14 @@ export default {
       currentLocation: null,
       center: { lat: 37.783333, lng: 29.094715 },
       hasUserPeople: true,
+      height: 0,
     };
   },
 
   methods: {
+    scale() {
+      this.height = this.height > 0 ? 0 : 500;
+    },
     changePeople() {
       this.hasUserPeople = !this.hasUserPeople;
     },
@@ -84,5 +106,15 @@ export default {
   position: fixed;
   top: 65px;
   right: 2px;
+}
+.filter {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+.filter-button {
+  position: fixed;
+  right: 2px;
+  bottom: 200px;
 }
 </style>

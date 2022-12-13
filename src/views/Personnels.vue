@@ -4,15 +4,27 @@
       <v-card max-height="85vh" class="scroll">
         <v-card-title primary-title class="navbar">
           <div>Personeller</div>
-          <v-btn color="primary" icon>
-            <v-icon>mdi-account-multiple-plus</v-icon>
-          </v-btn>
         </v-card-title>
-        <v-card-subtitle> personel sayısı: 51</v-card-subtitle>
-        <v-list-item two-line>
+        <v-card-subtitle>
+          personel sayısı: {{ $store.state.personnels.length }}
+        </v-card-subtitle>
+        <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Personel adı</v-list-item-title>
-            <v-list-item-subtitle>Telefon numarası</v-list-item-subtitle>
+            <v-text-field
+              outlined
+              placeholder="Personellerde Ara.."
+              v-model="search"
+            ></v-text-field>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          two-line
+          v-for="(item, index) in filteredPersonnels"
+          :key="index"
+        >
+          <v-list-item-content>
+            <v-list-item-title>{{ item.Name }} </v-list-item-title>
+            <v-list-item-subtitle>{{ item.Email }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-card>
@@ -21,7 +33,18 @@
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    filteredPersonnels() {
+      return this.$store.state.personnels.filter(
+        (x) => x.Name.toLowerCase().indexOf(this.search) != -1
+      );
+    },
+  },
+  data() {
+    return {
+      search: "",
+    };
+  },
+};
 </script>
-
-<style></style>

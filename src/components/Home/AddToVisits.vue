@@ -115,6 +115,7 @@ export default {
       return date.toISOString().substring(0, 16);
     },
     async postVisit() {
+      console.log(this.user.id);
       this.isLoading = true;
       await this.axios
         .post("visit-someone", {
@@ -124,7 +125,7 @@ export default {
           PeopleID: this.user.id,
         })
         .then((result) => {
-          this.$emit("addedVisit", result.data.visits);
+          this.$emit("addedVisit", result.data.visits, this.form.personnels);
           this.form = {
             personnels: [],
             description: "",

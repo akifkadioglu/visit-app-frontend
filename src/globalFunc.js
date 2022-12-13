@@ -19,11 +19,13 @@ export const httpRequests = {
             });
     },
     async getUserPeople() {
-        await axios.get("/user-people").then(result => {
-            store.state.userPeople = result.data.people;
-        }).catch(err => {
-            console.log(err)
-        })
+        await axios.get("/user-people")
+            .then(result => {
+                store.state.userPeople = result.data.people;
+            }).catch(err => {
+                console.log(err)
+            })
+
     },
     async getSectors() {
         await axios
@@ -34,6 +36,7 @@ export const httpRequests = {
             .catch((err) => {
                 console.log(err);
             });
+
     },
     async getPersonnels() {
         await axios
@@ -54,6 +57,7 @@ export const httpRequests = {
             .catch((err) => {
                 console.log(err);
             });
+
     },
     async getAllVisits() {
         await axios
@@ -64,6 +68,7 @@ export const httpRequests = {
             .catch((err) => {
                 console.log(err);
             });
+
     },
     async getPersonnelVisits() {
         await axios

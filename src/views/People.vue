@@ -5,19 +5,26 @@
         <div>
           <div v-if="$store.state.isAdmin">
             <transition name="fade" mode="out-in">
-              <v-progress-circular v-if="isLoading" indeterminate color="primary"/>
+              <v-progress-circular
+                v-if="isLoading"
+                indeterminate
+                color="primary"
+              />
+
               <div v-else>
                 <v-btn color="primary" depressed @click="getPeopleType">
-                  <div v-if="!isAllUsers">
-                    Tüm kişileri getir
-                  </div>
-                  <div v-else>
-                    Kendi kişilerimi getir
-                  </div>
+                  <div v-if="!isAllUsers">Tüm kişileri getir</div>
+                  <div v-else>Kendi kişilerimi getir</div>
                 </v-btn>
               </div>
             </transition>
           </div>
+        </div>
+        <div>
+          <v-progress-circular color="primary" indeterminate v-if="isLoading" />
+          <v-btn @click="refresh" v-else depressed small color="primary" icon>
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
         </div>
         <div>
           <v-btn color="primary" depressed @click="addSomeone">
@@ -26,13 +33,27 @@
           </v-btn>
         </div>
       </div>
+      <div class="col-sm-12">
+        <v-text-field
+          outlined
+          placeholder="Kişilerde Ara.."
+          v-model="search"
+        ></v-text-field>
+      </div>
       <div class="col-sm-6">
         <v-card max-height="85vh" class="scroll">
           <v-card-title primary-title>
             <div>Esnaflar</div>
           </v-card-title>
-          <v-card-subtitle> Esnaf sayısı: {{ esnaf.length }}</v-card-subtitle>
-          <v-list-item two-line v-for="(item, index) in esnaf" :key="index">
+          <v-card-subtitle>
+            Esnaf sayısı:
+            {{ filteredPeople.filter((x) => !x.Role).length }}</v-card-subtitle
+          >
+          <v-list-item
+            two-line
+            v-for="(item, index) in filteredPeople.filter((x) => !x.Role)"
+            :key="index"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 {{ item.Name }}
@@ -43,11 +64,11 @@
             </v-list-item-content>
             <v-card-actions>
               <v-btn
-                  depressed
-                  small
-                  color="primary"
-                  icon
-                  @click="selectSomeone(index, false)"
+                depressed
+                small
+                color="primary"
+                icon
+                @click="selectSomeone(item.ID)"
               >
                 <v-icon>mdi-information-outline</v-icon>
               </v-btn>
@@ -60,8 +81,15 @@
           <v-card-title primary-title>
             <div>İhvanlar</div>
           </v-card-title>
-          <v-card-subtitle> ihvan sayısı: {{ ihvan.length }}</v-card-subtitle>
-          <v-list-item two-line v-for="(item, index) in ihvan" :key="index">
+          <v-card-subtitle>
+            ihvan sayısı:
+            {{ filteredPeople.filter((x) => x.Role).length }}</v-card-subtitle
+          >
+          <v-list-item
+            two-line
+            v-for="(item, index) in filteredPeople.filter((x) => x.Role)"
+            :key="index"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 {{ item.Name }}
@@ -72,11 +100,11 @@
             </v-list-item-content>
             <v-list-item-action>
               <v-btn
-                  depressed
-                  small
-                  color="primary"
-                  icon
-                  @click="selectSomeone(index, true)"
+                depressed
+                small
+                color="primary"
+                icon
+                @click="selectSomeone(item.ID)"
               >
                 <v-icon>mdi-information-outline</v-icon>
               </v-btn>
@@ -86,17 +114,16 @@
       </div>
     </div>
     <Information
-        :isDialogOpen="isInformationDialogOpen"
-        :person="selectedPerson"
-        :selectedPersonIndex="selectedPersonIndex"
-        @closeDialog="closeDialog"
-        @updatedPeople="updatedPeople"
-        @deletedPeople="deletedPeople"
+      :isDialogOpen="isInformationDialogOpen"
+      :person="selectedPerson"
+      @closeDialog="closeDialog"
+      @updatedPeople="updatedPeople"
+      @deletedPeople="deletedPeople"
     />
     <AddSomeone
-        :isDialogOpen="isAddSomeoneDialogOpen"
-        @closeDialog="closeDialog"
-        @addedPeople="addedPeople"
+      :isDialogOpen="isAddSomeoneDialogOpen"
+      @closeDialog="closeDialog"
+      @addedPeople="addedPeople"
     />
   </div>
 </template>
@@ -110,80 +137,75 @@ export default {
     Information,
     AddSomeone,
   },
-  mounted() {
-    this.people = this.$store.state.userPeople;
+  computed: {
+    filteredPeople() {
+      return this.isAllUsers
+        ? this.$store.state.people.filter(
+            (x) => x.Name.toLowerCase().indexOf(this.search) != -1
+          )
+        : this.$store.state.userPeople.filter(
+            (x) => x.Name.toLowerCase().indexOf(this.search) != -1
+          );
+    },
   },
   data() {
     return {
-      people: [],
-      ihvan: [],
-      esnaf: [],
       isInformationDialogOpen: false,
       isAddSomeoneDialogOpen: false,
       selectedPerson: {},
       selectedPersonIndex: 0,
       isLoading: false,
-      isAllUsers: false
+      isAllUsers: false,
+      search: "",
     };
   },
-  watch: {
-    people: {
-      handler: function (people) {
-        this.classifyingPeople(people);
-      },
-      deep: true,
-      immediate: true,
-    },
-    "$store.state.userPeople": {
-      handler: function (people) {
-        this.classifyingPeople(people);
-      },
-      deep: true,
-      immediate: true,
-    },
-  },
+
   methods: {
     async getPeopleType() {
-      this.isLoading = true
-      this.isAllUsers ? await this.$func.getUserPeople() : await this.$func.getPeople()
-      this.people = this.isAllUsers ? this.$store.state.userPeople : this.$store.state.people
-      this.isAllUsers = !this.isAllUsers
-      this.isLoading = false
+      this.isLoading = true;
+      this.people = this.isAllUsers
+        ? this.$store.state.userPeople
+        : this.$store.state.people;
+      this.isAllUsers = !this.isAllUsers;
+      this.isLoading = false;
     },
-    selectSomeone(index, role) {
+    selectSomeone(id) {
       this.isInformationDialogOpen = true;
-      this.selectedPerson = role ? this.ihvan[index] : this.esnaf[index];
-      this.selectedPersonIndex = index;
+      this.selectedPerson = this.$store.state.people.filter(
+        (x) => x.ID == id
+      )[0];
     },
     addSomeone() {
       this.isAddSomeoneDialogOpen = true;
     },
-    closeDialog() {
+    async closeDialog() {
       this.isAddSomeoneDialogOpen = false;
       this.isInformationDialogOpen = false;
+      await this.refresh();
     },
-    classifyingPeople(people) {
-      this.ihvan = people.filter((x) => x.Role);
-      this.esnaf = people.filter((x) => !x.Role);
-    },
+
     addedPeople(value) {
-      this.people.unshift(value);
+      this.$store.state.people.unshift(value);
+      this.$store.state.userPeople.unshift(value);
     },
-    deletedPeople(index, isIhvan) {
-      if (isIhvan) {
-        this.ihvan.splice(index, 1);
-      } else {
-        this.esnaf.splice(index, 1);
-      }
-      this.people = this.ihvan.concat(this.esnaf);
+    deletedPeople(id) {
+      this.$store.state.userPeople = this.$store.state.userPeople.filter(
+        (x) => x.ID != id
+      );
+      this.$store.state.people = this.$store.state.userPeople.filter(
+        (x) => x.ID != id
+      );
     },
-    updatedPeople(index, isIhvan, newValue) {
-      if (isIhvan) {
-        this.ihvan[index] = newValue;
-      } else {
-        this.esnaf[index] = newValue;
-      }
-      this.people = this.ihvan.concat(this.esnaf);
+    updatedPeople(id, newValue) {
+      this.$store.state.people.filter((x) => x.ID == id)[0] = newValue;
+      this.$store.state.userPeople.filter((x) => x.ID == id)[0] = newValue;
+    },
+    async refresh() {
+      this.isLoading = true;
+      this.isAllUsers
+        ? await this.$func.getPeople()
+        : await this.$func.getUserPeople();
+      this.isLoading = false;
     },
   },
 };
