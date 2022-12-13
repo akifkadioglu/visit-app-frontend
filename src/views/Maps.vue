@@ -8,9 +8,11 @@
     >
       <GmapMarker
         :key="index"
-        v-for="(item, index) in hasUserPeople
-          ? $store.state.userPeople
-          : $store.state.people"
+        v-for="(item, index) in people.filter((x) =>
+          selectedSectors.length > 0
+            ? selectedSectors.indexOf(x.SectorID) != -1
+            : true
+        )"
         :position="
           google && new google.maps.LatLng(item.Latitude, item.Longitude)
         "
@@ -27,61 +29,49 @@
         </gmap-info-window>
       </GmapMarker>
     </GmapMap>
-    <v-tooltip left>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          class="action-button"
-          fab
-          dark
-          depressed
-          v-bind="attrs"
-          v-on="on"
-          @click="changePeople"
-        >
-          <v-icon dark v-if="hasUserPeople">mdi-account-switch-outline</v-icon>
-          <v-icon dark v-else>mdi-account-network-outline</v-icon>
-        </v-btn>
-      </template>
-      <span v-if="hasUserPeople">Tüm kişileri getir</span>
-      <span v-else>Sadece benim kişilerimi getir</span>
-    </v-tooltip>
-    <div class="filter-button">
-      <v-btn fab depressed dark @click="scale">
-        <v-icon dark>mdi-filter</v-icon>
-      </v-btn>
-    </div>
-    <transition name="fade" mode="in-out">
-      <div class="filter" v-if="height > 0">
-        <v-card :height="height" width="300">
-          <v-card-title primary-title>
-            <div>Sektörleri Filtrele</div>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn flat color="primary" @click="scale">Kapat</v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-    </transition>
+    <WhichPeople @changePeople="changePeople" :hasUserPeople="hasUserPeople" />
+    <FilterBySector
+      :height="height"
+      @scale="scale"
+      @filterSector="filterBySector"
+    />
   </div>
 </template>
 
 <script>
 import { gmapApi } from "vue2-google-maps";
+import FilterBySector from "../components/Maps/FilterCard.vue";
+import WhichPeople from "../components/Maps/WhichPeople.vue";
 
 export default {
+  components: { FilterBySector, WhichPeople },
   computed: {
     google: gmapApi,
+    people() {
+      return this.hasUserPeople
+        ? this.$store.state.userPeople
+        : this.$store.state.people;
+    },
   },
   data() {
     return {
       currentLocation: null,
       center: { lat: 37.783333, lng: 29.094715 },
       hasUserPeople: true,
+      selectedSectors: [],
       height: 0,
     };
   },
 
   methods: {
+    filterBySector(id) {
+      let index = this.selectedSectors.indexOf(id);
+      if (index == -1) {
+        this.selectedSectors.push(id);
+      } else {
+        this.selectedSectors.splice(index, 1);
+      }
+    },
     scale() {
       this.height = this.height > 0 ? 0 : 500;
     },
@@ -100,21 +90,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.action-button {
-  position: fixed;
-  top: 65px;
-  right: 2px;
-}
-.filter {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-}
-.filter-button {
-  position: fixed;
-  right: 2px;
-  bottom: 200px;
-}
-</style>
