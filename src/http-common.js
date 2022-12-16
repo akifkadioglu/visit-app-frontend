@@ -6,11 +6,16 @@ var CryptoJS = require("crypto-js");
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 var token = (localStorage.getItem('token') ?? '').toString();
 if (token != '') {
-    token = AES.decrypt(
-        localStorage.getItem("token"),
-        process.env.VUE_APP_APP_KEY,
-    ).toString(CryptoJS.enc.Utf8);
+    try {
+        token = AES.decrypt(
+            localStorage.getItem("token"),
+            process.env.VUE_APP_APP_KEY,
+        ).toString(CryptoJS.enc.Utf8);
 
-    axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+    } catch (error) {
+        localStorage.clear()
+    }
+
 }
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;

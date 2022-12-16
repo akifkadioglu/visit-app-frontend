@@ -51,7 +51,6 @@
 export default {
   computed: {
     currentRouteName() {
-      this.changeRoute(this.$route.name);
       return this.$route.name;
     },
   },
@@ -117,16 +116,6 @@ export default {
     logout() {
       localStorage.clear();
       this.$router.push({ name: "Login" });
-    },
-    changeRoute(newRoute) {
-      if (newRoute != "Login") {
-        if (
-          localStorage.getItem("token") == null ||
-          localStorage.getItem("token") == ""
-        ) {
-          this.$router.push({ name: "Login" });
-        }
-      }
     },
   },
 };

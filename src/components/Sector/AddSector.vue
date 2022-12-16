@@ -3,7 +3,7 @@
     <v-layout row justify-center>
       <v-dialog v-model="isDialogOpen" persistent width="600">
         <v-card>
-          <v-card-title class="headline">Yeni Kişi Ekle</v-card-title>
+          <v-card-title class="headline">Yeni Sektör Ekle</v-card-title>
           <v-card-subtitle class="mt-2">Sektörün bilgileri;</v-card-subtitle>
           <v-card-text>
             <v-text-field

@@ -73,6 +73,7 @@ export default {
           localStorage.setItem("name", name);
           localStorage.setItem("role", role);
           localStorage.setItem("user_id", user_id);
+          this.$router.go(0);
           this.$router.push({ name: "Home" });
         })
         .catch((err) => {

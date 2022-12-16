@@ -115,7 +115,7 @@
               class="mt-3"
               filled
               rounded
-              v-if="isAuthUserAdmin"
+              v-if="$store.state.isAdmin"
               dense
               v-model="person.PersonnelID"
               @change="updatePeople"
@@ -209,7 +209,7 @@ export default {
   },
   data() {
     return {
-      isAuthUserAdmin: localStorage.getItem("role") === "true",
+      isAuthUserAdmin: this.$helpers.returnDecryptedLocalStorage(localStorage.getItem("role")) === "true",
       isLoading: false,
     };
   },

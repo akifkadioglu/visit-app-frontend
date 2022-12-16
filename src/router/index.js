@@ -11,52 +11,67 @@ import Login from '../views/Login.vue'
 import Sectors from '../views/Sectors.vue'
 
 Vue.use(VueRouter)
+import { middlewares } from './middlewares'
 
 const routes = [
   {
     path: '/giris-yap',
     name: 'Login',
-    component: Login
+    component: Login,
+    beforeEnter: middlewares.login
   },
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    beforeEnter: middlewares.auth
+
   },
   {
     path: '/haritalar',
     name: 'Maps',
-    component: Maps
+    component: Maps,
+    beforeEnter: middlewares.auth
   },
   {
     path: '/takvim',
     name: 'Calendar',
-    component: Calendar
+    component: Calendar,
+    beforeEnter: middlewares.auth
   },
   {
     path: '/ziyaretler',
     name: 'Visits',
-    component: Visits
+    component: Visits,
+    beforeEnter: (to, from, next) => {
+      middlewares.auth(to, from, next)
+      middlewares.admin(to, from, next)
+    }
+
   },
   {
     path: '/kisiler',
     name: 'People',
-    component: People
+    component: People,
+    beforeEnter: middlewares.auth
   },
   {
     path: '/sektorler',
     name: 'Sectors',
-    component: Sectors
+    component: Sectors,
+    beforeEnter: middlewares.auth
   },
   {
     path: '/personeller',
     name: 'Personnels',
-    component: Personnels
+    component: Personnels,
+    beforeEnter: middlewares.auth
   },
   {
     path: '/hesabim',
     name: 'Account',
-    component: Account
+    component: Account,
+    beforeEnter: middlewares.auth
   },
   {
     path: '*',

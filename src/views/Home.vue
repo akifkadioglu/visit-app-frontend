@@ -7,30 +7,12 @@
       </v-btn>
     </div>
     <div class="row">
-      <div class="col-sm-3">
-        <v-card class="mx-auto scroll" max-width="400" max-height="90vh" tile>
-          <v-subheader>ESNAFLAR</v-subheader>
-          <v-list-item
-            two-line
-            v-for="(item, index) in $store.state.userPeople.filter(
-              (x) => !x.Role
-            )"
-            :key="index"
-          >
-            <v-list-item-content>
-              <v-list-item-title>{{ item.Name }}</v-list-item-title>
-              <v-list-item-subtitle>
-                {{ item.Information }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn icon @click="openSheet(item)">
-                <v-icon color="primary">mdi-plus</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-card>
-      </div>
+      <PeopleList
+        :header="'Esnaflar'"
+        :items="$store.state.userPeople.filter((x) => !x.Role)"
+        @openSheet="openSheet"
+      />
+
       <div class="col-sm-6">
         <v-card class="mx-auto scroll" max-height="90vh" tile>
           <v-subheader>BUGÜN ZİYARET EDİLENLER</v-subheader>
@@ -59,30 +41,11 @@
           </v-list-item>
         </v-card>
       </div>
-      <div class="col-sm-3">
-        <v-card class="mx-auto scroll" max-width="400" max-height="90vh" tile>
-          <v-subheader>İHVANLAR</v-subheader>
-          <v-list-item
-            two-line
-            v-for="(item, index) in $store.state.userPeople.filter(
-              (x) => x.Role
-            )"
-            :key="index"
-          >
-            <v-list-item-content>
-              <v-list-item-title> {{ item.Name }}</v-list-item-title>
-              <v-list-item-subtitle>
-                {{ item.Information }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn icon @click="openSheet(item)">
-                <v-icon color="primary">mdi-plus</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-card>
-      </div>
+      <PeopleList
+        :header="'İhvanlar'"
+        :items="$store.state.userPeople.filter((x) => x.Role)"
+        @openSheet="openSheet"
+      />
     </div>
     <AddToVisits
       :addToVisits="isSheetOpen"
@@ -99,9 +62,10 @@
 
 <script>
 import AddToVisits from "../components/Home/AddToVisits.vue";
+import PeopleList from "../components/Home/PeopleList.vue";
 
 export default {
-  components: { AddToVisits },
+  components: { AddToVisits, PeopleList },
   data() {
     return {
       selectedPerson: {
@@ -121,25 +85,28 @@ export default {
     },
     async deleteVisit(item, index) {
       this.isLoading = true;
-      await this.axios
-        .delete("delete-visit", { params: { VisitID: item.ID } })
-        .then(() => {
-          this.$store.state.dailyVisits.splice(index, 1);
-          this.$store.state.AllVisits = this.$store.state.AllVisits.filter(
-            (x) => x.ID != item.ID
-          );
-          this.$store.state.personnelVisits =
-            this.$store.state.personnelVisits.filter((x) => x.ID != item.ID);
-          var i = this.$store.state.personnels
-            .map((e) => e.ID)
-            .indexOf(parseInt(this.userId));
-          this.$store.state.personnels[i].Visits = this.$store.state.personnels[
-            i
-          ].Visits.filter((x) => x.ID != item.ID);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (confirm("Silmek istediğine emin misin?")) {
+        await this.axios
+          .delete("delete-visit", { params: { VisitID: item.ID } })
+          .then(() => {
+            this.$store.state.dailyVisits.splice(index, 1);
+            this.$store.state.AllVisits = this.$store.state.AllVisits.filter(
+              (x) => x.ID != item.ID
+            );
+            this.$store.state.personnelVisits =
+              this.$store.state.personnelVisits.filter((x) => x.ID != item.ID);
+            var i = this.$store.state.personnels
+              .map((e) => e.ID)
+              .indexOf(parseInt(this.userId));
+            this.$store.state.personnels[i].Visits =
+              this.$store.state.personnels[i].Visits.filter(
+                (x) => x.ID != item.ID
+              );
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
       this.isLoading = false;
     },
     openSheet(item) {
