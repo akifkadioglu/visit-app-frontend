@@ -105,8 +105,6 @@ export default {
   methods: {
     decreaseTime(vtime) {
       var date = new Date(vtime);
-      console.log(vtime);
-      console.log(date.toISOString());
       return date.toISOString().substring(0, 16);
     },
     returnDate() {
@@ -115,7 +113,6 @@ export default {
       return date.toISOString().substring(0, 16);
     },
     async postVisit() {
-      console.log(this.user.id);
       this.isLoading = true;
       await this.axios
         .post("visit-someone", {

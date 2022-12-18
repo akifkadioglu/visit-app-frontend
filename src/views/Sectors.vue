@@ -8,7 +8,9 @@
             <v-icon>mdi-briefcase-plus</v-icon>
           </v-btn>
         </v-card-title>
-        <v-card-subtitle> Sektör sayısı: {{ sectors.length }}</v-card-subtitle>
+        <v-card-subtitle>
+          Sektör sayısı: {{ $store.state.sectors.length }}</v-card-subtitle
+        >
         <v-list-item>
           <v-list-item-content>
             <v-text-field
@@ -24,21 +26,15 @@
           two-line
           v-for="(item, index) in filteredSector"
           :key="index"
+          @click="
+            (selectedSector = item),
+              (selectedSectorIndex = index),
+              (isUpdateSectorDialogOpen = true)
+          "
         >
           <v-list-item-content>
             <v-list-item-title>{{ item.Name }}</v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action>
-            <v-btn
-              depressed
-              small
-              color="error"
-              icon
-              @click="deleteSector(item.ID, index)"
-            >
-              <v-icon>mdi-delete-outline</v-icon>
-            </v-btn>
-          </v-list-item-action>
         </v-list-item>
       </v-card>
     </div>
@@ -47,68 +43,49 @@
       @closeDialog="closeDialog()"
       @addedSector="addedSector"
     />
+
+    <UpdateSector
+      :sector="selectedSector"
+      :isDialogOpen="isUpdateSectorDialogOpen"
+      :index="selectedSectorIndex"
+      @closeDialog="closeDialog()"
+    />
   </div>
 </template>
 
 <script>
 import AddSector from "../components/Sector/AddSector.vue";
+import UpdateSector from "../components/Sector/UpdateSector.vue";
 
 export default {
   components: {
     AddSector,
-  },
-  mounted() {
-    this.sectors = this.$store.state.sectors;
+    UpdateSector,
   },
   data() {
     return {
       search: "",
-      sectors: [],
+      selectedSector: {},
+      selectedSectorIndex: 0,
       isAddSectorDialogOpen: false,
+      isUpdateSectorDialogOpen: false,
     };
   },
   computed: {
     filteredSector() {
-      return this.sectors.filter((x) => x.Name.toLowerCase().indexOf(this.search) != -1);
+      return this.$store.state.sectors.filter(
+        (x) => x.Name.toLowerCase().indexOf(this.search) != -1
+      );
     },
   },
-  watch: {
-    "$store.state.sectors": {
-      handler: function () {
-        this.sectors = this.$store.state.sectors;
-      },
-    },
-  },
+
   methods: {
-    // EMIT ACTIONS
     closeDialog() {
       this.isAddSectorDialogOpen = false;
+      this.isUpdateSectorDialogOpen = false;
     },
     addedSector(value) {
-      this.sectors.unshift(value);
-    },
-
-    // HTTP ACTIONS
-    deleteSector(id, index) {
-      if (
-        confirm(
-          this.sectors[index].Name +
-            " adlı sektörün silinmesini gerçekten istiyor musun?"
-        )
-      ) {
-        this.axios
-          .delete("/delete-sector", {
-            params: {
-              SectorID: id,
-            },
-          })
-          .then(() => {
-            this.sectors.splice(index, 1);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      this.$store.state.sectors.unshift(value);
     },
   },
 };

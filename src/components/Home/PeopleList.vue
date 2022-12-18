@@ -1,6 +1,12 @@
 <template>
   <div class="col-sm-3">
-    <v-card class="mx-auto scroll" max-width="400" max-height="90vh" tile>
+    <v-card
+      class="mx-auto scroll rounded-lg"
+      max-width="400"
+      max-height="90vh"
+      tile
+      outlined 
+    >
       <v-card-title>{{ header.toUpperCase() }}</v-card-title>
       <v-list-item
         @click="$emit('openSheet', item)"

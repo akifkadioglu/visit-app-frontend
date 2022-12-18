@@ -40,78 +40,18 @@
           v-model="search"
         ></v-text-field>
       </div>
-      <div class="col-sm-6">
-        <v-card max-height="85vh" class="scroll">
-          <v-card-title primary-title>
-            <div>Esnaflar</div>
-          </v-card-title>
-          <v-card-subtitle>
-            Esnaf sayısı:
-            {{ filteredPeople.filter((x) => !x.Role).length }}</v-card-subtitle
-          >
-          <v-list-item
-            two-line
-            v-for="(item, index) in filteredPeople.filter((x) => !x.Role)"
-            :key="index"
-          >
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ item.Name }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                {{ item.Information }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-card-actions>
-              <v-btn
-                depressed
-                small
-                color="primary"
-                icon
-                @click="selectSomeone(item.ID)"
-              >
-                <v-icon>mdi-information-outline</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-list-item>
-        </v-card>
-      </div>
-      <div class="col-sm-6">
-        <v-card max-height="85vh" class="scroll">
-          <v-card-title primary-title>
-            <div>İhvanlar</div>
-          </v-card-title>
-          <v-card-subtitle>
-            ihvan sayısı:
-            {{ filteredPeople.filter((x) => x.Role).length }}</v-card-subtitle
-          >
-          <v-list-item
-            two-line
-            v-for="(item, index) in filteredPeople.filter((x) => x.Role)"
-            :key="index"
-          >
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ item.Name }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                {{ item.Information }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn
-                depressed
-                small
-                color="primary"
-                icon
-                @click="selectSomeone(item.ID)"
-              >
-                <v-icon>mdi-information-outline</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-card>
-      </div>
+      <PeopleList
+        :header="'Ihvanlar'"
+        :countText="'Ihvan sayısı'"
+        :people="filteredPeople.filter((x) => x.Role)"
+        @selectSomeone="selectSomeone"
+      />
+      <PeopleList
+        :header="'Esnaflar'"
+        :countText="'Esnaf sayısı'"
+        :people="filteredPeople.filter((x) => !x.Role)"
+        @selectSomeone="selectSomeone"
+      />
     </div>
     <Information
       :isDialogOpen="isInformationDialogOpen"
@@ -131,11 +71,13 @@
 <script>
 import AddSomeone from "../components/People/AddSomeone.vue";
 import Information from "../components/People/Information.vue";
+import PeopleList from "../components/People/PeopleList.vue";
 
 export default {
   components: {
     Information,
     AddSomeone,
+    PeopleList,
   },
   computed: {
     filteredPeople() {

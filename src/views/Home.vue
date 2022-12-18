@@ -14,13 +14,19 @@
       />
 
       <div class="col-sm-6">
-        <v-card class="mx-auto scroll" max-height="90vh" tile>
+        <v-card
+          class="mx-auto scroll rounded-lg"
+          max-height="90vh"
+          tile
+          outlined
+        >
           <v-subheader>BUGÜN ZİYARET EDİLENLER</v-subheader>
 
           <v-list-item
             two-line
             v-for="(item, index) in $store.state.dailyVisits"
             :key="index"
+            @click="selectVisit(item, index)"
           >
             <v-list-item-content>
               <v-list-item-title>{{ item.People.Name }}</v-list-item-title>
@@ -28,16 +34,6 @@
                 {{ item.People.Information }}
               </v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-action>
-              <v-progress-circular
-                v-if="isLoading"
-                indeterminate
-                color="primary"
-              />
-              <v-btn v-else icon @click="deleteVisit(item, index)">
-                <v-icon color="error">mdi-delete-outline</v-icon>
-              </v-btn>
-            </v-list-item-action>
           </v-list-item>
         </v-card>
       </div>
@@ -57,15 +53,27 @@
         description: selectedPerson.description,
       }"
     />
+    <VisitInformation
+      :selectedVisit="selectedVisit"
+      :isDialogOpen="isVisitInformationDialogOpen"
+      :index="selectedIndexForVisit"
+      @deleteVisit="deleteVisit"
+      @closeSheet="closeSheet"
+    />
   </div>
 </template>
 
 <script>
+import VisitInformation from "../components/Home/VisitInformation.vue";
 import AddToVisits from "../components/Home/AddToVisits.vue";
 import PeopleList from "../components/Home/PeopleList.vue";
 
 export default {
-  components: { AddToVisits, PeopleList },
+  components: {
+    AddToVisits,
+    PeopleList,
+    VisitInformation,
+  },
   data() {
     return {
       selectedPerson: {
@@ -73,15 +81,27 @@ export default {
         name: "",
         description: "",
       },
+      selectedVisit: {
+        id: 0,
+        name: "",
+        description: "",
+      },
+      selectedIndexForVisit: 0,
       isSheetOpen: false,
       userId: this.$helpers.returnDecryptItem(localStorage.getItem("user_id")),
-
+      isVisitInformationDialogOpen: false,
       isLoading: false,
     };
   },
   methods: {
     closeSheet() {
       this.isSheetOpen = false;
+      this.isVisitInformationDialogOpen = false;
+    },
+    selectVisit(item, index) {
+      this.isVisitInformationDialogOpen = true;
+      this.selectedVisit = item;
+      this.selectedIndexForVisit = index;
     },
     async deleteVisit(item, index) {
       this.isLoading = true;
@@ -102,6 +122,7 @@ export default {
               this.$store.state.personnels[i].Visits.filter(
                 (x) => x.ID != item.ID
               );
+            this.closeSheet();
           })
           .catch((err) => {
             console.log(err);
@@ -116,20 +137,13 @@ export default {
       this.isSheetOpen = true;
     },
     addedVisit(item, personnels) {
-      this.$store.state.dailyVisits.unshift(item);
+      (item["Personnels"] = this.$store.state.personnels.filter(
+        (x) => personnels.indexOf(x.ID) != -1
+      )),
+        this.$store.state.dailyVisits.unshift(item);
       this.$store.state.AllVisits.unshift(item);
       this.$store.state.personnelVisits.unshift(item);
-      let index = this.$store.state.personnels
-        .map((e) => e.ID)
-        .indexOf(parseInt(this.userId));
-      this.$store.state.personnels[index].Visits.unshift(item);
-      for (let index = 0; index < personnels.length; index++) {
-        console.log(personnels[index]);
-        this.$store.state.personnels
-          .map((e) => e.ID)
-          .indexOf(parseInt(personnels[index]));
-        this.$store.state.personnels[personnels[index]].Visits.unshift(item);
-      }
+      this.$func.getPersonnels();
     },
     async refresh() {
       this.isLoading = true;
@@ -139,5 +153,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

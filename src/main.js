@@ -17,6 +17,7 @@ require('dotenv').config()
 require('./http-common');
 require('moment/locale/tr')
 const moment = require('moment')
+require('moment/locale/tr')
 
 Vue.prototype.$func = httpRequests
 Vue.prototype.$helpers = helpers
