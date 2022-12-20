@@ -80,6 +80,16 @@ export const httpRequests = {
                 console.log(err);
             });
     },
+    async getAllPersonnelsVisits() {
+        await axios
+            .get("/personnels-visits-by-date")
+            .then((result) => {
+                store.state.allPersonnelVisits = result.data.personnels;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    },
 
 
     getRoles() {

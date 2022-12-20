@@ -8,24 +8,21 @@
           <v-card-text>
             <v-text-field
               v-model="person.Name"
-              @change="updatePeople"
-              placeholder="İsim"
+              label="İsim"
               filled
               rounded
               dense
             />
             <v-text-field
               v-model="person.Address"
-              @change="updatePeople"
-              placeholder="Açık Adres"
+              label="Açık Adres"
               filled
               rounded
               dense
             />
             <v-text-field
               v-model="person.Phone"
-              @change="updatePeople"
-              placeholder="Telefon"
+              label="Telefon"
               filled
               rounded
               dense
@@ -46,8 +43,7 @@
               <v-text-field
                 class="select"
                 v-model="person.Latitude"
-                @change="updatePeople"
-                placeholder="Enlem"
+                label="Enlem"
                 prepend-icon="mdi-latitude"
                 filled
                 rounded
@@ -56,8 +52,7 @@
               <v-text-field
                 class="select"
                 v-model="person.Longitude"
-                @change="updatePeople"
-                placeholder="Boylam"
+                label="Boylam"
                 prepend-icon="mdi-longitude"
                 filled
                 rounded
@@ -72,7 +67,6 @@
                 rounded
                 dense
                 v-model="person.SectorID"
-                @change="updatePeople"
                 :items="this.$store.state.sectors"
                 item-value="ID"
                 item-text="Name"
@@ -94,7 +88,6 @@
                 rounded
                 dense
                 v-model="person.Role"
-                @change="updatePeople"
                 :items="this.$store.state.roles"
                 item-value="Role"
                 item-text="Name"
@@ -118,7 +111,6 @@
               v-if="$store.state.isAdmin"
               dense
               v-model="person.PersonnelID"
-              @change="updatePeople"
               :items="this.$store.state.personnels"
               item-value="ID"
               item-text="Name"
@@ -138,11 +130,10 @@
               name="input-7-1"
               filled
               v-model="person.Information"
-              @change="updatePeople"
               rounded
               class="mt-5"
               auto-grow
-              placeholder="Kişi hakkında bilgi girin"
+              label="Kişi hakkında bilgi girin"
             />
           </v-card-text>
 
@@ -151,9 +142,29 @@
             <v-btn
               color="secondary"
               depressed
+              :disabled="isLoading"
               @click.native="$emit('closeDialog')"
             >
-              Kapat
+              <v-progress-circular
+                v-if="isLoading"
+                indeterminate
+                color="primary"
+              />
+              <div v-else>Kapat</div>
+            </v-btn>
+            <v-btn
+              color="primary"
+              :disabled="isLoading"
+              depressed
+              class="ml-5"
+              @click="updatePeople"
+            >
+              <v-progress-circular
+                v-if="isLoading"
+                indeterminate
+                color="primary"
+              />
+              <div v-else>Düzenle</div>
             </v-btn>
             <v-btn
               color="error"
@@ -209,7 +220,10 @@ export default {
   },
   data() {
     return {
-      isAuthUserAdmin: this.$helpers.returnDecryptedLocalStorage(localStorage.getItem("role")) === "true",
+      isAuthUserAdmin:
+        this.$helpers.returnDecryptedLocalStorage(
+          localStorage.getItem("role")
+        ) === "true",
       isLoading: false,
     };
   },

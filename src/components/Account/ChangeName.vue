@@ -3,23 +3,34 @@
     <v-card-subtitle> İsim Değiştir </v-card-subtitle>
     <v-text-field
       v-model="name"
-      placeholder="Yeni isminizi giriniz"
+      :counter="30"
+      label="Yeni isminizi giriniz"
       rounded
       filled
     />
-      <div class="text-center" v-if="isLoading">
-        <v-progress-circular v-if="!isLoading" indeterminate color="primary" />
-      </div>
+    <v-text-field
+      v-model="phone"
+      label="Yeni telefon numaranızı"
+      :counter="30"
+      rounded
+      filled
+    />
 
-      <v-btn
-        @click="changeName"
-        v-else
+    <v-btn
+      @click="changeName"
+      color="primary"
+      x-large
+      :disabled="isLoading"
+      class="save-button mt-2 mb-5"
+    >
+      <v-progress-circular
+        class="text-center"
+        v-if="isLoading"
+        indeterminate
         color="primary"
-        x-large
-        class="save-button mt-2 mb-5"
-      >
-        Kaydet
-      </v-btn>
+      />
+      <div v-else>Kaydet</div>
+    </v-btn>
   </div>
 </template>
 
@@ -27,7 +38,10 @@
 export default {
   data() {
     return {
-      name: "",
+      name: this.$helpers.returnDecryptedLocalStorage("name"),
+      phone: this.$helpers.returnDecryptedLocalStorage("phone")
+        ? this.$helpers.returnDecryptedLocalStorage("phone")
+        : null,
       isLoading: false,
     };
   },
@@ -40,11 +54,21 @@ export default {
         return;
       }
       await this.axios
-        .post("/change-name", { name: this.name })
+        .post("/change-name", {
+          name: this.name,
+          phone: this.phone,
+        })
         .then(() => {
-          localStorage.setItem("name", this.name);
+          localStorage.setItem(
+            "name",
+            this.$helpers.returnEncryptItem(this.name)
+          );
+          localStorage.setItem(
+            "phone",
+            this.$helpers.returnEncryptItem(this.phone ?? "")
+          );
           alert("İsminiz '" + this.name + "' olarak değiştirildi");
-          this.name = null;
+          this.$router.go(0);
         })
         .catch((err) => {
           console.log(err);

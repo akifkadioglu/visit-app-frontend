@@ -28,6 +28,7 @@ export default {
       this.$func.getUserPeople();
       this.$func.dailyVisits();
       this.$func.getPersonnelVisits();
+      this.$func.getAllPersonnelsVisits();
       if (this.$helpers.returnDecryptedLocalStorage("role") === "true") {
         this.$func.getAllVisits();
       }

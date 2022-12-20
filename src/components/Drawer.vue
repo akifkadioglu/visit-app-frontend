@@ -16,14 +16,14 @@
               <v-list-item-content>
                 <h6>{{ name }}</h6>
                 <v-list-item-subtitle>
-                  <div v-if="role">Yönetici</div>
+                  <div v-if="$store.state.isAdmin">Yönetici</div>
                   <div v-else>Normal</div>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
             <v-list-item
-              v-for="(item, index) in routes"
+              v-for="(item, index) in filteredRoutes"
               :key="index"
               :to="{ name: item.route }"
               exact
@@ -53,9 +53,13 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
+    filteredRoutes() {
+      return this.$store.state.isAdmin
+        ? this.routes
+        : this.routes.filter((x) => x.isAdminRoleRequired == false);
+    },
   },
   mounted() {
-    this.role = this.$helpers.returnDecryptedLocalStorage("role") === "true";
     this.$store.state.isAdmin =
       this.$helpers.returnDecryptedLocalStorage("role") === "true";
   },
@@ -64,50 +68,49 @@ export default {
       drawer: false,
       group: null,
       isLoginning: false,
-      role: false,
       name: this.$helpers.returnDecryptedLocalStorage("name"),
       routes: [
         {
           name: "Ana sayfa",
           icon: "mdi-home",
           route: "Home",
-          required: true,
+          isAdminRoleRequired: false,
         },
         {
           name: "Haritalar",
           icon: "mdi-google-maps",
           route: "Maps",
-          required: true,
+          isAdminRoleRequired: false,
         },
         {
           name: "Takvim",
           icon: "mdi-calendar",
           route: "Calendar",
-          required: true,
+          isAdminRoleRequired: false,
         },
         {
           name: "Ziyaretler",
           icon: "mdi-walk",
           route: "Visits",
-          required: true,
+          isAdminRoleRequired: true,
         },
         {
           name: "Sektörler",
           icon: "mdi-briefcase",
           route: "Sectors",
-          required: true,
+          isAdminRoleRequired: true,
         },
         {
           name: "Kişiler",
           icon: "mdi-account-group",
           route: "People",
-          required: true,
+          isAdminRoleRequired: false,
         },
         {
           name: "Personeller",
           icon: "mdi-account-multiple",
           route: "Personnels",
-          required: true,
+          isAdminRoleRequired: true,
         },
       ],
     };

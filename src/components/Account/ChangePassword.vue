@@ -5,18 +5,29 @@
     <v-text-field
       v-model="form.CurrentPassword"
       placeholder="Mevcut Şifreyi giriniz"
+      :type="isCurrentPasswordDisplay ? 'text' : 'password'"
+      :append-icon="isCurrentPasswordDisplay ? 'mdi-eye' : 'mdi-eye-off'"
+      @click:append="isCurrentPasswordDisplay = !isCurrentPasswordDisplay"
       rounded
       filled
     />
     <v-text-field
       v-model="form.Password"
       placeholder="Yeni Şifreyi giriniz"
+      :type="isPasswordDisplay ? 'text' : 'password'"
+      :append-icon="isPasswordDisplay ? 'mdi-eye' : 'mdi-eye-off'"
+      @click:append="isPasswordDisplay = !isPasswordDisplay"
       rounded
       filled
     />
     <v-text-field
       v-model="form.PasswordConfirmation"
       placeholder="Yeni Şifreyi Yeniden giriniz"
+      :type="isPasswordConfirmationDisplay ? 'text' : 'password'"
+      :append-icon="isPasswordConfirmationDisplay ? 'mdi-eye' : 'mdi-eye-off'"
+      @click:append="
+        isPasswordConfirmationDisplay = !isPasswordConfirmationDisplay
+      "
       rounded
       filled
     />
@@ -40,6 +51,9 @@
 export default {
   data() {
     return {
+      isCurrentPasswordDisplay: false,
+      isPasswordDisplay: false,
+      isPasswordConfirmationDisplay: false,
       form: {
         CurrentPassword: "",
         Password: "",

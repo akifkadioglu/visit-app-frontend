@@ -8,21 +8,21 @@
           <v-card-text>
             <v-text-field
               v-model="form.Name"
-              placeholder="İsim"
+              label="İsim"
               filled
               rounded
               dense
             />
             <v-text-field
               v-model="form.Address"
-              placeholder="Açık Adres"
+              label="Açık Adres"
               filled
               rounded
               dense
             />
             <v-text-field
               v-model="form.Phone"
-              placeholder="Telefon"
+              label="Telefon"
               filled
               rounded
               dense
@@ -31,7 +31,7 @@
               <v-text-field
                 class="select"
                 v-model="form.Latitude"
-                placeholder="Enlem"
+                label="Enlem"
                 prepend-icon="mdi-latitude"
                 filled
                 rounded
@@ -40,7 +40,7 @@
               <v-text-field
                 class="select"
                 v-model="form.Longitude"
-                placeholder="Boylam"
+                label="Boylam"
                 prepend-icon="mdi-longitude"
                 filled
                 rounded
@@ -98,7 +98,7 @@
               rounded
               class="mt-5"
               auto-grow
-              placeholder="Kişi hakkında bilgi girin"
+              label="Kişi hakkında bilgi girin"
             />
           </v-card-text>
           <v-card-actions>

@@ -2,13 +2,23 @@
   <div class="container">
     <div class="center">
       <div class="navbar mt-5" style="width: 500px">
-        <input class="" v-model="start" type="date" />
+        <input v-model="start" type="date" />
         <span>-</span>
-        <input class="" v-model="finish" type="date" />
+        <input v-model="finish" type="date" />
       </div>
     </div>
     <div class="text-center">
-      <v-btn color="primary" depressed width="100px" class="mt-3">Getir</v-btn>
+      <v-btn
+        color="primary"
+        @click="getPersonnelsVisitsByDate"
+        depressed
+        width="100px"
+        class="mt-3"
+        :disabled="isLoading"
+      >
+        <v-progress-circular v-if="isLoading" indeterminate color="primary" />
+        <div v-else>Getir</div>
+      </v-btn>
     </div>
     <div class="row mt-6">
       <div class="col-sm-4">
@@ -16,17 +26,18 @@
           <v-list nav dense height="500px" class="scroll">
             <v-list-item-group active-class="no-active">
               <v-list-item
-                v-for="(item, index) in this.$store.state.personnels.map(
-                  (x) => x.Name
-                )"
+                v-for="(item, index) in this.$store.state.allPersonnelVisits"
                 :key="index"
+                @click="(isDialogOpen = true), (selectedVisits = item.Visits)"
               >
                 <v-list-item-content>
-                  <v-list-item-title>{{ item }}</v-list-item-title>
+                  <v-list-item-title>{{ item.Name }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
                   {{
-                    $store.state.personnels.map((x) => x.Visits.length)[index]
+                    $store.state.allPersonnelVisits.map((x) => x.Visits.length)[
+                      index
+                    ]
                   }}
                 </v-list-item-action>
               </v-list-item>
@@ -46,21 +57,39 @@
         ></apexchart>
       </div>
     </div>
+    <VisitInformation
+      @closeDialog="isDialogOpen = false"
+      :visits="selectedVisits"
+      :isDialogOpen="isDialogOpen"
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 var tr = require("apexcharts/dist/locales/tr.json");
-
+import VisitInformation from "../components/Visit/VisitInformation.vue";
 export default {
   mounted() {
     this.setValues();
   },
+  computed: {
+    personelVisits() {
+      return [];
+    },
+  },
+  components: {
+    VisitInformation,
+  },
   data() {
     return {
-      start: new Date().toISOString().substr(0,10),
-      finish: new Date().toISOString().substr(0,10),
+      selectedVisits: [],
+      isDialogOpen: false,
+      isLoading: false,
+      start: new Date().toISOString().substr(0, 10),
+      finish: new Date(new Date().valueOf() + 1000 * 3600 * 24)
+        .toISOString()
+        .substr(0, 10),
       options: {
         chart: {
           id: "Ziyaretler",
@@ -89,7 +118,7 @@ export default {
     };
   },
   watch: {
-    "$store.state.personnels"() {
+    "$store.state.allPersonnelVisits"() {
       this.setValues();
     },
   },
@@ -98,7 +127,9 @@ export default {
       this.$refs.realtimeChart.updateSeries(
         [
           {
-            data: this.$store.state.personnels.map((x) => x.Visits.length),
+            data: this.$store.state.allPersonnelVisits.map(
+              (x) => x.Visits.length
+            ),
           },
         ],
         false,
@@ -106,22 +137,29 @@ export default {
       );
       this.$refs.realtimeChart.updateOptions({
         xaxis: {
-          categories: this.$store.state.personnels.map((x) => x.Name),
+          categories: this.$store.state.allPersonnelVisits.map((x) => x.Name),
         },
       });
-      this.options.xaxis.categories = this.$store.state.personnels.map(
+      this.options.xaxis.categories = this.$store.state.allPersonnelVisits.map(
         (x) => x.Name
       );
     },
     async getPersonnelsVisitsByDate() {
+      this.isLoading = true;
       await this.axios
-        .get("/personnels-visits-by-date")
+        .get("/personnels-visits-by-date", {
+          params: {
+            start: this.start,
+            finish: this.finish,
+          },
+        })
         .then((result) => {
-          this.$store.state.personnels = result.data.personnels;
+          this.$store.state.allPersonnelVisits = result.data.personnels;
         })
         .catch((err) => {
           console.log(err);
         });
+      this.isLoading = false;
     },
     updateSeriesLine() {},
   },

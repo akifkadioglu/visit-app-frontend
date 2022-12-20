@@ -59,13 +59,19 @@ const routes = [
     path: '/sektorler',
     name: 'Sectors',
     component: Sectors,
-    beforeEnter: middlewares.auth
+    beforeEnter: (to, from, next) => {
+      middlewares.auth(to, from, next)
+      middlewares.admin(to, from, next)
+    }
   },
   {
     path: '/personeller',
     name: 'Personnels',
     component: Personnels,
-    beforeEnter: middlewares.auth
+    beforeEnter: (to, from, next) => {
+      middlewares.auth(to, from, next)
+      middlewares.admin(to, from, next)
+    }
   },
   {
     path: '/hesabim',
