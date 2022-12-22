@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-card height="100vh">
+    <v-card height="100vh" elevation="0">
       <Drawer />
       <v-main>
         <transition name="fade" mode="out-in">

@@ -3,7 +3,6 @@ import axios from 'axios';
 const AES = require('crypto-js/aes');
 var CryptoJS = require("crypto-js");
 
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 var token = (localStorage.getItem('token') ?? '').toString();
 if (token != '') {
     try {
@@ -16,6 +15,6 @@ if (token != '') {
     } catch (error) {
         localStorage.clear()
     }
-
 }
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
